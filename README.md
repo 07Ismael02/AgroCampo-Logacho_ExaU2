@@ -6,7 +6,57 @@ Aplicación Android/Kotlin Multiplatform del examen parcial II, Unidad 2, caso A
 
 Este repositorio es independiente de AgroAPI y de los proyectos Pharma. El paquete raíz es `pe.upeu.agrosierra`.
 
-## Alcance de la base inicial
+## Entrega final (Unidad 2)
+
+### Ejecución
+
+1. Iniciar AgroAPI (ver su README) en `http://localhost:8080`.
+2. En `local.properties` (fuera de Git): `agro.api.baseUrl=http://10.0.2.2:8080` para el emulador.
+3. Compilar e instalar: `./gradlew.bat :androidApp:assembleDebug --no-daemon --console=plain` y `adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk`.
+4. Pruebas (incluye `commonTest`): `./gradlew.bat :shared:testAndroidHostTest --no-daemon --console=plain`.
+5. Usuarios de prueba del anexo 10: `tecnico1`, `jefe1`, `admin`.
+
+### Estructura de paquetes (`pe.upeu.agrosierra`)
+
+```
+shared/src/commonMain/kotlin/pe/upeu/agrosierra/
+  domain/model        Labor, Lote, Sesion, ErrorApi (jerarquía sellada), ResumenSincronizacion
+  domain/repository   AuthRepository, LoteRepository, LaborRepository, SincronizacionRepository, ObservadorConexion
+  domain/usecase      IniciarSesion, RestaurarSesion, CerrarSesion, SincronizarUseCase
+  data/remote         SolicitudesApi (cabecera Bearer centralizada), LotesApi, LaboresApi, MapeoErrores
+  data/remote/dto     DTO con @SerialName y conversión al dominio
+  data/local          BaseLocal, LaborLocal (SQLDelight), AlmacenSeguro, EstadoRed
+  data/repository     AuthRepositorioRest, LoteRepositorioLocalFirst, LaborRepositorio, SincronizadorLabores, ColaLabores
+  presentation        sesion, listado (LoteViewModel), detalle (LaborViewModel) con StateFlow y UiState
+  di                  Módulos Koin
+shared/src/commonMain/sqldelight/   AgroDb.sq y migraciones 1.sqm, 2.sqm
+shared/src/commonTest/              Pruebas con MockEngine y SQLite en memoria
+androidApp/src/main/kotlin/...      MainActivity, driver Android, Keystore, observador de conectividad
+```
+
+### Arquitectura
+
+Capas `domain`, `data` y `presentation` separadas; interfaces de repositorio en el dominio, implementaciones en `data`, inyección con Koin. La UI observa flujos de SQLDelight; el servicio solo actualiza la base local. La sincronización sube pendientes antes de descargar (ver sección de fase 8).
+
+### Contrato API consumido
+
+`POST /api/v1/auth/login`, `GET /usuarios/me`, `GET /lotes`, `GET /lotes/{id}`, `GET /lotes/{id}/labores`, `POST /labores`, `PUT /labores/{id}`, `DELETE /labores/{id}`, `POST /lotes/{id}/cerrar-campania`. Contrato completo en el README de AgroAPI y colección en `evidencias/AgroAPI_Logacho.postman_collection.json`.
+
+### Roles y privilegios
+
+| Rol | Privilegios |
+| --- | --- |
+| TECNICO | LOTE_LEER, LABOR_LEER, LABOR_CREAR, LABOR_EDITAR |
+| JEFE_CAMPO | anteriores + LABOR_ELIMINAR, CAMPANIA_CERRAR |
+| ADMINISTRADOR | LOTE_LEER, LABOR_LEER, USUARIO_GESTIONAR |
+
+La interfaz no ofrece acciones sin privilegio; el backend las rechaza con 403 si se intentan.
+
+### Evidencias y cambio sorpresa
+
+Evidencias reales en `evidencias/` (ver `evidencias/README.md`). Cambio sorpresa (SC): **pendiente**, el docente aún no comunicó la letra asignada.
+
+## Alcance de la base inicial (fase 1, histórico)
 
 El módulo `shared` contiene código común Compose y un target Android. `androidApp` es la aplicación Android que lo ejecuta. La pantalla de texto actual verifica únicamente que el proyecto compila; no representa datos del servicio ni implementa todavía el examen.
 

@@ -1,4 +1,5 @@
-*   fa6b809 (HEAD -> develop, origin/develop) Merge pull request #5 from 07Ismael02/fix/validacion-json-logacho
+* b03d8ba (HEAD -> docs/entrega-final-logacho, origin/docs/entrega-final-logacho) docs: completar README y agregar coleccion API de entrega
+*   fa6b809 (tag: v1.0-unidad2, origin/develop, develop) Merge pull request #5 from 07Ismael02/fix/validacion-json-logacho
 |\  
 | * bfeb2dd (origin/fix/validacion-json-logacho, fix/validacion-json-logacho) test(json): verificar omisiones y valores invalidos en labores
 | * 49541d0 fix(json): deserializar valores Kotlin y ubicar errores por campo

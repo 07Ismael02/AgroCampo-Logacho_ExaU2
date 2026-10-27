@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "AgroAPI-Logacho (Examen U2 - AgroSierra, version A)",
+    "description": "Nueve rutas reales de AgroAPI. Ejecute en orden: los logins guardan los tokens en variables de coleccion. Contrasenas de prueba del anexo 10 del examen. Requiere AgroAPI local con H2 (http://localhost:8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api/v1" },
+    { "key": "tokenTecnico", "value": "" },
+    { "key": "tokenJefe", "value": "" },
+    { "key": "laborCreada", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Autenticacion",
+      "item": [
+        {
+          "name": "POST /auth/login tecnico1 (200)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('200 OK', () => pm.response.to.have.status(200));",
+            "pm.collectionVariables.set('tokenTecnico', pm.response.json().token);"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"usuario\":\"tecnico1\",\"contrasena\":\"Agro2026*\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "POST /auth/login jefe1 (200)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('200 OK', () => pm.response.to.have.status(200));",
+            "pm.collectionVariables.set('tokenJefe', pm.response.json().token);"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"usuario\":\"jefe1\",\"contrasena\":\"Agro2026*\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "GET /usuarios/me (200)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('200 OK', () => pm.response.to.have.status(200));"
+          ] } }],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
+            "url": "{{baseUrl}}/usuarios/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Lotes y labores",
+      "item": [
+        {
+          "name": "GET /lotes (200)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
+            "url": { "raw": "{{baseUrl}}/lotes?pagina=0&tamanio=10&valle=Valle Alto", "host": ["{{baseUrl}}"], "path": ["lotes"],
+              "query": [{ "key": "pagina", "value": "0" }, { "key": "tamanio", "value": "10" }, { "key": "valle", "value": "Valle Alto" }] }
+          }
+        },
+        {
+          "name": "GET /lotes/{id} (200)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
+            "url": "{{baseUrl}}/lotes/1"
+          }
+        },
+        {
+          "name": "GET /lotes/{id}/labores (200)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
+            "url": { "raw": "{{baseUrl}}/lotes/1/labores?pagina=0&tamanio=20", "host": ["{{baseUrl}}"], "path": ["lotes", "1", "labores"],
+              "query": [{ "key": "pagina", "value": "0" }, { "key": "tamanio", "value": "20" }] }
+          }
+        },
+        {
+          "name": "POST /labores (201)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('201 Created', () => pm.response.to.have.status(201));",
+            "pm.collectionVariables.set('laborCreada', pm.response.json().id);"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"loteId\":2,\"tipo\":\"RIEGO\",\"fecha\":\"2026-10-27\",\"cantidad\":1.0,\"observacion\":\"Creada desde la coleccion\"}" },
+            "url": "{{baseUrl}}/labores"
+          }
+        },
+        {
+          "name": "PUT /labores/{id} (200)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"loteId\":2,\"tipo\":\"RIEGO\",\"fecha\":\"2026-10-27\",\"cantidad\":1.5,\"observacion\":\"Corregida desde la coleccion\"}" },
+            "url": "{{baseUrl}}/labores/{{laborCreada}}"
+          }
+        },
+        {
+          "name": "DELETE /labores/{id} jefe1 (204)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('204 No Content', () => pm.response.to.have.status(204));"
+          ] } }],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenJefe}}" }],
+            "url": "{{baseUrl}}/labores/{{laborCreada}}"
+          }
+        },
+        {
+          "name": "POST /lotes/{id}/cerrar-campania jefe1 (200; modifica datos)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenJefe}}" }],
+            "url": "{{baseUrl}}/lotes/3/cerrar-campania"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Errores esperados",
+      "item": [
+        {
+          "name": "400 validacion - cantidad negativa",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('400 con validationErrors.cantidad', () => { pm.response.to.have.status(400); pm.expect(pm.response.json().validationErrors).to.have.property('cantidad'); });"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"loteId\":1,\"tipo\":\"RIEGO\",\"fecha\":\"2026-10-27\",\"cantidad\":-5,\"observacion\":\"prueba 400\"}" },
+            "url": "{{baseUrl}}/labores"
+          }
+        },
+        {
+          "name": "401 sin token - GET /usuarios/me",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+          ] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/usuarios/me" }
+        },
+        {
+          "name": "403 tecnico1 sin LABOR_ELIMINAR - DELETE /labores/1",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('403 Forbidden', () => pm.response.to.have.status(403));"
+          ] } }],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
+            "url": "{{baseUrl}}/labores/1"
+          }
+        },
+        {
+          "name": "403 tecnico1 sin CAMPANIA_CERRAR - POST /lotes/1/cerrar-campania",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('403 Forbidden', () => pm.response.to.have.status(403));"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
+            "url": "{{baseUrl}}/lotes/1/cerrar-campania"
+          }
+        }
+      ]
+    }
+  ]
+}

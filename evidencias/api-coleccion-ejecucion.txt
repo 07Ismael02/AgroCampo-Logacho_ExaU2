@@ -1,0 +1,51 @@
+# Ejecución real de la colección AgroAPI_Logacho.postman_collection.json con curl — 2026-10-27T16:29:11-05:00 — AgroAPI develop fa6b809 (JWT omitidos)
+
+### 1 POST /auth/login tecnico1
+{"token":"<JWT>","usuario":"tecnico1","rol":"TECNICO","privilegios":["LOTE_LEER","LABOR_LEER","LABOR_CREAR","LABOR_EDITAR"]}
+=> HTTP 200
+
+### 2 GET /usuarios/me
+{"id":1,"usuario":"tecnico1","rol":"TECNICO","privilegios":["LOTE_LEER","LABOR_LEER","LABOR_CREAR","LABOR_EDITAR"]}
+=> HTTP 200
+
+### 3 GET /lotes?pagina=0&tamanio=10&valle=Valle Alto
+{"contenido":[{"id":1,"codigo":"ALT-001","nombre":"Lote Mirador","hectareas":2.5,"cultivo":"Papa","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":2.0},{"id":2,"codigo":"ALT-002","nombre":"Lote Quebrada","hectareas":3.0,"cultivo":"Maiz","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":1.5},{"id":3,"codigo":"ALT-003","nombre":"Lote Pampa","hectareas":1.8,"cultivo":"Quinua","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":1.2}],"pagina
+=> HTTP 200
+
+### 4 GET /lotes/1
+{"id":1,"codigo":"ALT-001","nombre":"Lote Mirador","hectareas":2.5,"cultivo":"Papa","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":2.0}
+=> HTTP 200
+
+### 5 GET /lotes/1/labores?pagina=0&tamanio=3
+{"contenido":[{"id":1000,"loteId":1,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.5,"observacion":"Riego en modo avion","pendiente":false},{"id":1,"loteId":1,"tipo":"COSECHA","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.0,"observacion":"Cosecha del sector norte","pendiente":false},{"id":2,"loteId":1,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.0,"observacion":"Riego de mantenimiento","pendiente":false}],"pagina":0,"tamanio":3
+=> HTTP 200
+
+### 6 POST /labores
+{"id":1001,"loteId":2,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.0,"observacion":"Creada desde la coleccion","pendiente":false}
+=> HTTP 201
+
+### 7 PUT /labores/1001
+{"id":1001,"loteId":2,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.5,"observacion":"Corregida desde la coleccion","pendiente":false}
+=> HTTP 200
+
+### 8 DELETE /labores/1001 (jefe1)
+
+=> HTTP 204
+
+### 9 POST /lotes/{id}/cerrar-campania — la variante 200 (jefe1) NO se ejecutó para no cerrar un lote de la semilla; ver 403 abajo
+
+### ERROR 400 validación (cantidad negativa)
+{"timestamp":"2026-10-27T21:29:12.707208500","status":400,"error":"Bad Request","message":"Datos inválidos","path":"/api/v1/labores","validationErrors":{"cantidad":"debe ser mayor que 0"}}
+=> HTTP 400
+
+### ERROR 401 sin token GET /usuarios/me
+{"timestamp":"2026-10-27T21:29:12.786122700","status":401,"error":"Unauthorized","message":"Debe iniciar sesión","path":"/api/v1/usuarios/me","validationErrors":null}
+=> HTTP 401
+
+### ERROR 403 tecnico1 DELETE /labores/1
+{"timestamp":"2026-10-27T21:29:12.867862100","status":403,"error":"Forbidden","message":"Privilegio insuficiente","path":"/api/v1/labores/1","validationErrors":null}
+=> HTTP 403
+
+### ERROR 403 tecnico1 POST /lotes/1/cerrar-campania
+{"timestamp":"2026-10-27T21:29:12.942876","status":403,"error":"Forbidden","message":"Privilegio insuficiente","path":"/api/v1/lotes/1/cerrar-campania","validationErrors":null}
+=> HTTP 403

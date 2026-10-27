@@ -1,4 +1,5 @@
-*   dbaf20b (HEAD -> docs/entrega-final-logacho, origin/develop, develop) Merge pull request #5 from 07Ismael02/feature/sincronizacion-offline-logacho
+* e3597ec (HEAD -> docs/entrega-final-logacho, origin/docs/entrega-final-logacho) docs: agregar evidencias reales de entrega de la unidad 2
+*   dbaf20b (tag: v1.0-unidad2, origin/develop, develop) Merge pull request #5 from 07Ismael02/feature/sincronizacion-offline-logacho
 |\  
 | * 82f8ce3 (origin/feature/sincronizacion-offline-logacho, feature/sincronizacion-offline-logacho) docs: documentar orden de sincronizacion y revision de envios inciertos
 | * 8c211f4 test(offline): cubrir registro sin red, errores, paginacion, reconexion y reinicio

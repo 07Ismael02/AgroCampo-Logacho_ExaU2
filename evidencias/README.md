@@ -27,6 +27,17 @@ Las funcionalidades llegaron a `develop` mediante PR con merge commit (AgroCampo
 
 ## Limitaciones reales
 
-- No había dispositivo ni emulador Android conectado durante la entrega: no hay capturas de la app ni prueba manual en modo avión. La creación offline y la sincronización están verificadas solo con pruebas automatizadas.
+- Pruebas manuales en emulador Pixel_8 con capturas reales en `capturas/`. No hay captura de un 403 dentro de la app (la interfaz oculta la acción); el 403 se evidencia por HTTP. El botón «Salir» no cerró la sesión al pulsarlo por adb; pendiente de revisión.
 - AgroAPI no ofrece idempotencia: un POST sin respuesta queda como envío incierto y requiere revisión manual (ver README principal).
 - No se implementó ningún cambio sorpresa (SC-A/B/C/D); no fue asignado.
+
+## Entregables adicionales
+
+| Archivo | Contenido |
+| --- | --- |
+| `Evidencias_Examen_U2_AgroSierra_Logacho.pdf` | Documento formal de evidencias (fuente: el `.html` del mismo nombre). |
+| `capturas/01..07_*.png` | Capturas reales del emulador: login, lotes, labores, modo avión, pendiente, reconexión y vista de admin. |
+| `AgroAPI_Logacho.postman_collection.json` | Colección Postman v2.1 con las nueve rutas y ejemplos 400, 401 y 403. |
+| `api-coleccion-ejecucion.txt` | Ejecución real de esas peticiones con curl. |
+
+Cambio sorpresa (SC): pendiente; el docente aún no comunicó la letra.
