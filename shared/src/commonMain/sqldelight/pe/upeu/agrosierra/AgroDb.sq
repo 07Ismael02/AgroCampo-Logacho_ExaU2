@@ -10,6 +10,23 @@ CREATE TABLE lote (
 );
 
 CREATE TABLE labor (
+    ownerId INTEGER NOT NULL,
+    id INTEGER NOT NULL,
+    loteId INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    fecha TEXT NOT NULL,
+    responsable TEXT NOT NULL,
+    cantidad REAL NOT NULL,
+    observacion TEXT NOT NULL,
+    pendiente INTEGER NOT NULL,
+    operacionPendiente TEXT,
+    creadoEpochMs INTEGER,
+    PRIMARY KEY (ownerId, id),
+    FOREIGN KEY (loteId) REFERENCES lote(id) ON DELETE RESTRICT
+);
+
+-- Las filas de la versión anterior quedan en cuarentena, sin atribuirlas a un usuario.
+CREATE TABLE labor_legacy (
     id INTEGER NOT NULL PRIMARY KEY,
     loteId INTEGER NOT NULL,
     tipo TEXT NOT NULL,
@@ -45,7 +62,9 @@ INSERT OR REPLACE INTO lote
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 borrarLotes:
-DELETE FROM lote;
+DELETE FROM lote
+WHERE NOT EXISTS (SELECT 1 FROM labor WHERE labor.loteId = lote.id)
+  AND NOT EXISTS (SELECT 1 FROM labor_legacy WHERE labor_legacy.loteId = lote.id);
 
 obtenerUltimaSincronizacion:
 SELECT instanteEpochMs FROM sync_meta WHERE clave = 'lotes';
@@ -54,7 +73,27 @@ guardarUltimaSincronizacion:
 INSERT OR REPLACE INTO sync_meta (clave, instanteEpochMs) VALUES ('lotes', ?);
 
 observarLaboresPorLote:
-SELECT * FROM labor WHERE loteId = ? ORDER BY fecha DESC;
+SELECT * FROM labor WHERE ownerId = :ownerId AND loteId = :loteId ORDER BY fecha DESC, id DESC;
+
+obtenerLabor:
+SELECT * FROM labor WHERE ownerId = :ownerId AND id = :id;
+
+listarPendientes:
+SELECT * FROM labor WHERE ownerId = :ownerId AND pendiente = 1 ORDER BY creadoEpochMs, id;
+
+insertarLabor:
+INSERT OR REPLACE INTO labor
+(ownerId, id, loteId, tipo, fecha, responsable, cantidad, observacion, pendiente, operacionPendiente, creadoEpochMs)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+borrarLabor:
+DELETE FROM labor WHERE ownerId = :ownerId AND id = :id;
+
+borrarSincronizadasDelLote:
+DELETE FROM labor WHERE ownerId = :ownerId AND loteId = :loteId AND pendiente = 0;
 
 siguienteIdLocal:
-SELECT COALESCE(MIN(id), 0) FROM labor;
+SELECT COALESCE(MIN(id), 0) FROM labor WHERE ownerId = ?;
+
+contarLaboresLegadas:
+SELECT COUNT(*) FROM labor_legacy;
