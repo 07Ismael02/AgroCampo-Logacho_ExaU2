@@ -1,0 +1,29 @@
+*   fa6b809 (HEAD -> develop, origin/develop) Merge pull request #5 from 07Ismael02/fix/validacion-json-logacho
+|\  
+| * bfeb2dd (origin/fix/validacion-json-logacho, fix/validacion-json-logacho) test(json): verificar omisiones y valores invalidos en labores
+| * 49541d0 fix(json): deserializar valores Kotlin y ubicar errores por campo
+|/  
+*   9a483f4 Merge pull request #4 from 07Ismael02/feature/api-rest-logacho
+|\  
+| * 480a4f3 (origin/feature/api-rest-logacho, feature/api-rest-logacho) docs(api): describir contrato y privilegios AgroSierra
+| * 743cdb1 test(api): comprobar paginacion roles y operaciones REST
+| * 0ee5a59 feat(api): exponer lotes y labores con permisos y errores
+|/  
+*   cf33237 Merge pull request #3 from 07Ismael02/feature/seguridad-jwt-logacho
+|\  
+| * 7a7f31c (origin/feature/seguridad-jwt-logacho, feature/seguridad-jwt-logacho) test(seguridad): verificar login y expiracion del token
+| * 41adc6c feat(seguridad): firmar JWT y proteger rutas del servicio
+|/  
+*   c0fe106 Merge pull request #2 from 07Ismael02/feature/reglas-negocio-logacho
+|\  
+| * 70a2996 (origin/feature/reglas-negocio-logacho, feature/reglas-negocio-logacho) test(reglas): verificar RN-01 a RN-04
+| * 8876f66 feat(reglas): aplicar restricciones de labores y campañas
+|/  
+*   426f756 Merge pull request #1: persistencia y semilla de AgroSierra
+|\  
+| * 5fc082d (origin/feature/backend-base-logacho, feature/backend-base-logacho) fix(datos): aislar H2 de variables heredadas
+| * 0eb4cf6 test(datos): verificar semilla y privilegios en H2
+| * 2ae86d0 feat(datos): implementar modelos y repositorios de lotes y labores
+| * bb3b25e feat(datos): crear esquema H2 y semilla AgroSierra
+|/  
+* 0d5573f (origin/main, origin/HEAD, main) chore: iniciar AgroAPI con Kotlin y Maven Wrapper

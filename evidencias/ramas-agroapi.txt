@@ -1,0 +1,15 @@
+* develop
+  feature/api-rest-logacho
+  feature/backend-base-logacho
+  feature/reglas-negocio-logacho
+  feature/seguridad-jwt-logacho
+  fix/validacion-json-logacho
+  main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/develop
+  remotes/origin/feature/api-rest-logacho
+  remotes/origin/feature/backend-base-logacho
+  remotes/origin/feature/reglas-negocio-logacho
+  remotes/origin/feature/seguridad-jwt-logacho
+  remotes/origin/fix/validacion-json-logacho
+  remotes/origin/main

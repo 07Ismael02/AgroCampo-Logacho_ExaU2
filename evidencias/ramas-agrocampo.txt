@@ -1,0 +1,16 @@
+  develop
+* docs/entrega-final-logacho
+  feature/autenticacion-ktor-logacho
+  feature/estructura-kmp-logacho
+  feature/labores-offline-logacho
+  feature/lotes-sqldelight-logacho
+  feature/sincronizacion-offline-logacho
+  main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/develop
+  remotes/origin/feature/autenticacion-ktor-logacho
+  remotes/origin/feature/estructura-kmp-logacho
+  remotes/origin/feature/labores-offline-logacho
+  remotes/origin/feature/lotes-sqldelight-logacho
+  remotes/origin/feature/sincronizacion-offline-logacho
+  remotes/origin/main

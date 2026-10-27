@@ -1,0 +1,19 @@
+fa6b809 | 2026-10-27 14:48:13 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #5 from 07Ismael02/fix/validacion-json-logacho
+bfeb2dd | 2026-10-27 14:47:44 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(json): verificar omisiones y valores invalidos en labores
+49541d0 | 2026-10-27 14:47:44 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | fix(json): deserializar valores Kotlin y ubicar errores por campo
+9a483f4 | 2026-10-27 14:35:33 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #4 from 07Ismael02/feature/api-rest-logacho
+480a4f3 | 2026-10-27 14:35:15 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | docs(api): describir contrato y privilegios AgroSierra
+743cdb1 | 2026-10-27 14:35:15 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(api): comprobar paginacion roles y operaciones REST
+0ee5a59 | 2026-10-27 14:35:15 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(api): exponer lotes y labores con permisos y errores
+cf33237 | 2026-10-27 14:29:47 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #3 from 07Ismael02/feature/seguridad-jwt-logacho
+7a7f31c | 2026-10-27 14:29:28 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(seguridad): verificar login y expiracion del token
+41adc6c | 2026-10-27 14:29:28 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(seguridad): firmar JWT y proteger rutas del servicio
+c0fe106 | 2026-10-27 14:24:01 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #2 from 07Ismael02/feature/reglas-negocio-logacho
+70a2996 | 2026-10-27 14:23:32 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(reglas): verificar RN-01 a RN-04
+8876f66 | 2026-10-27 14:23:32 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(reglas): aplicar restricciones de labores y campañas
+426f756 | 2026-10-27 14:20:26 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #1: persistencia y semilla de AgroSierra
+5fc082d | 2026-10-27 14:19:46 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | fix(datos): aislar H2 de variables heredadas
+0eb4cf6 | 2026-10-27 14:15:46 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(datos): verificar semilla y privilegios en H2
+2ae86d0 | 2026-10-27 14:15:46 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(datos): implementar modelos y repositorios de lotes y labores
+bb3b25e | 2026-10-27 14:15:46 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(datos): crear esquema H2 y semilla AgroSierra
+0d5573f | 2026-10-27 14:10:45 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | chore: iniciar AgroAPI con Kotlin y Maven Wrapper
