@@ -15,6 +15,7 @@ import pe.upeu.agrosierra.data.remote.LaboresApi
 import pe.upeu.agrosierra.data.remote.SolicitudesApi
 import pe.upeu.agrosierra.data.remote.crearClienteHttp
 import pe.upeu.agrosierra.data.repository.LaborRepositorio
+import pe.upeu.agrosierra.data.repository.ColaLabores
 import pe.upeu.agrosierra.db.AgroDb
 import pe.upeu.agrosierra.domain.model.ErrorApi
 import pe.upeu.agrosierra.domain.model.ErrorApiException
@@ -54,7 +55,7 @@ class LaborReglasTest {
         val local = LaborLocal(db)
         return Entorno(driver, local, auth, LaborRepositorio(local, base, api, auth, object : EstadoRed {
             override fun hayRed() = false
-        }))
+        }, ColaLabores()))
     }
 
     @Test fun creacionOfflineYEdicionPropiaConservanPendiente(): Unit = runBlocking {

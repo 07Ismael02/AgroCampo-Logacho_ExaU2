@@ -25,6 +25,8 @@ class BaseLocal(private val db: AgroDb) {
 
     fun obtenerLote(id: Long): Lote? = consultas.obtenerLote(id).executeAsOneOrNull()?.aDominio()
 
+    fun listarIdsLotes(): List<Long> = consultas.listarIdsLotes().executeAsList()
+
     fun reemplazarLotesCompleto(lotes: List<Lote>, instanteEpochMs: Long) {
         db.transaction {
             consultas.borrarLotes()
@@ -42,6 +44,8 @@ class BaseLocal(private val db: AgroDb) {
     private fun insertarLote(lote: Lote) {
         consultas.insertarLote(lote.id, lote.codigo, lote.nombre, lote.hectareas, lote.cultivo,
             lote.valle, if (lote.campaniaCerrada) 1L else 0L, lote.dosisMaximaPorHectarea)
+        consultas.actualizarLote(lote.codigo, lote.nombre, lote.hectareas, lote.cultivo,
+            lote.valle, if (lote.campaniaCerrada) 1L else 0L, lote.dosisMaximaPorHectarea, lote.id)
     }
 }
 

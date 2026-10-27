@@ -45,6 +45,9 @@ CREATE TABLE sync_meta (
 listarTodos:
 SELECT * FROM lote ORDER BY codigo;
 
+listarIdsLotes:
+SELECT id FROM lote ORDER BY id;
+
 filtrarLotes:
 SELECT * FROM lote
 WHERE (:valle IS NULL OR valle = :valle)
@@ -57,9 +60,13 @@ obtenerLote:
 SELECT * FROM lote WHERE id = ?;
 
 insertarLote:
-INSERT OR REPLACE INTO lote
+INSERT OR IGNORE INTO lote
 (id, codigo, nombre, hectareas, cultivo, valle, campaniaCerrada, dosisMaxima)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+actualizarLote:
+UPDATE lote SET codigo = ?, nombre = ?, hectareas = ?, cultivo = ?, valle = ?,
+    campaniaCerrada = ?, dosisMaxima = ? WHERE id = ?;
 
 borrarLotes:
 DELETE FROM lote
@@ -72,6 +79,12 @@ SELECT instanteEpochMs FROM sync_meta WHERE clave = 'lotes';
 guardarUltimaSincronizacion:
 INSERT OR REPLACE INTO sync_meta (clave, instanteEpochMs) VALUES ('lotes', ?);
 
+observarUltimaSincronizacionLabor:
+SELECT instanteEpochMs FROM sync_meta WHERE clave = 'labores:' || :ownerId;
+
+guardarUltimaSincronizacionLabor:
+INSERT OR REPLACE INTO sync_meta (clave, instanteEpochMs) VALUES ('labores:' || :ownerId, :instanteEpochMs);
+
 observarLaboresPorLote:
 SELECT * FROM labor WHERE ownerId = :ownerId AND loteId = :loteId ORDER BY fecha DESC, id DESC;
 
@@ -80,6 +93,9 @@ SELECT * FROM labor WHERE ownerId = :ownerId AND id = :id;
 
 listarPendientes:
 SELECT * FROM labor WHERE ownerId = :ownerId AND pendiente = 1 ORDER BY creadoEpochMs, id;
+
+contarPendientes:
+SELECT COUNT(*) FROM labor WHERE ownerId = :ownerId AND pendiente = 1;
 
 insertarLabor:
 INSERT OR REPLACE INTO labor
@@ -91,6 +107,9 @@ DELETE FROM labor WHERE ownerId = :ownerId AND id = :id;
 
 borrarSincronizadasDelLote:
 DELETE FROM labor WHERE ownerId = :ownerId AND loteId = :loteId AND pendiente = 0;
+
+borrarSincronizadasDeCuenta:
+DELETE FROM labor WHERE ownerId = :ownerId AND pendiente = 0;
 
 siguienteIdLocal:
 SELECT COALESCE(MIN(id), 0) FROM labor WHERE ownerId = ?;
