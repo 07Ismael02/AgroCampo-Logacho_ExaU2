@@ -37,3 +37,42 @@ El detalle del lote muestra labores desde SQLDelight y permite consultar todas l
 La migración `1.sqm` conserva las filas anteriores de `labor` en `labor_legacy` sin asignarles propietario. No se exponen ni se envían. Las nuevas filas usan `(ownerId, id)` como clave y `ownerId` procede exclusivamente de `/usuarios/me`. Los IDs de labores creadas sin red son negativos y las ediciones locales quedan marcadas como pendientes. Un técnico puede corregir su labor local pendiente. La edición offline de una labor remota se permite al jefe de campo; la restricción de 24 horas de un técnico requiere confirmación del servidor y, por ello, se valida online.
 
 Una creación online confirmada reconcilia el ID local con el positivo del servidor. Si el POST sale pero la respuesta se pierde, la operación se marca como **envío incierto** y no debe reenviarse automáticamente: el backend no ofrece clave de idempotencia. La subida completa de pendientes y la reconciliación posterior corresponden a la fase 8. La eliminación de labores no se encola sin red.
+
+## Sincronización offline-first (fase 8)
+
+`SincronizadorLabores` ejecuta una sola sincronización a la vez (`ColaLabores`, compartida con las escrituras de `LaborRepositorio`) y siempre en este orden:
+
+1. Comprueba la sesión local y que la cuenta solicitada sea la activa.
+2. Consulta `/api/v1/usuarios/me` con el JWT de esa sesión: confirma acceso real al backend y la identidad.
+3. Sube los pendientes de esa cuenta en orden de creación (POST para IDs negativos, PUT para correcciones).
+4. Reconcilia cada creación confirmada: la fila con ID local negativo se sustituye por la del servidor.
+5. Descarga todas las páginas de lotes y de labores de cada lote; cualquier página fallida o inconsistente cancela la descarga.
+6. Aplica la descarga en una única transacción SQLite, conservando las filas pendientes.
+7. Solo entonces guarda la marca `labores:<cuenta>` de última sincronización completa.
+
+La pantalla observa SQLDelight; la respuesta HTTP nunca alimenta la interfaz directamente. Se sincroniza con el botón «Sincronizar» y automáticamente cuando Android informa que vuelve a haber red (`ObservadorConexionAndroid` → `reconexiones()`).
+
+| Respuesta durante la subida | Efecto local |
+| --- | --- |
+| 400, 403, 404, 409 | La fila sigue pendiente, se guarda el motivo del servidor y se muestra como rechazada; la sesión se conserva. |
+| 401 | La fila sigue pendiente (no queda incierta), se borra el token y se cierra la sesión. |
+| 500, tiempo agotado, sin conexión durante un POST | La creación queda como **envío incierto**. |
+| Sin red antes de empezar | No se contacta al servidor; nada cambia. |
+
+Los PUT son idempotentes y se reintentan en la siguiente sincronización.
+
+### Envíos inciertos: revisión manual
+
+AgroAPI no ofrece clave de idempotencia ni correlación, así que la aplicación no puede saber si un POST sin respuesta creó la labor. Antes de cada POST la fila se marca como incierta (también cubre un cierre de la aplicación a mitad del envío). Mientras exista un envío incierto la sincronización se detiene antes de él y **no lo reenvía**. No se garantiza semántica de exactamente una vez.
+
+Procedimiento seguro:
+
+1. En la tarjeta marcada «Envío incierto», pulse «Revisar envío» y anote tipo, fecha, cantidad y lote.
+2. Consulte las labores de ese lote en AgroAPI (o pida al jefe de campo que lo haga) y confirme con el responsable si la labor fue registrada. Una coincidencia de campos por sí sola no prueba que sea la misma labor: dos labores legítimas pueden ser iguales.
+3. Si se confirma que existe, elija «Ya existe: descartar copia local»; la siguiente sincronización descargará la copia del servidor.
+4. Si se confirma que no existe, elija «No existe: reenviar»; la fila vuelve a la cola y se enviará una vez en la siguiente sincronización.
+5. Si no se puede confirmar, pulse «Cancelar» y deje la fila incierta.
+
+### Pruebas
+
+`SincronizadorLaboresTest` está en `commonTest` y usa `MockEngine` y SQLDelight. El controlador SQLite se declara con `expect` y su `actual` (JDBC en memoria y en archivo para simular reinicios) está en `androidHostTest`; por eso se ejecuta con `:shared:testAndroidHostTest`. El módulo `shared` solo declara el destino Android: no se ha compilado ni validado en iOS.
