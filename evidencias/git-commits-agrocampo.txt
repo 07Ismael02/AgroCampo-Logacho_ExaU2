@@ -1,0 +1,22 @@
+dbaf20b | 2026-10-27 16:13:06 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #5 from 07Ismael02/feature/sincronizacion-offline-logacho
+82f8ce3 | 2026-10-27 16:09:18 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | docs: documentar orden de sincronizacion y revision de envios inciertos
+8c211f4 | 2026-10-27 16:09:17 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(offline): cubrir registro sin red, errores, paginacion, reconexion y reinicio
+d5b4fcb | 2026-10-27 16:09:17 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(sincronizacion): mostrar rechazos y revisar envios inciertos
+85637a2 | 2026-10-27 16:09:17 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | fix(sincronizacion): distinguir rechazos del servidor de envios inciertos
+728c886 | 2026-10-27 16:02:25 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | test(sincronizacion): verificar orden, conciliacion y envios inciertos
+8c384e5 | 2026-10-27 16:02:24 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(sincronizacion): sincronizar manualmente y al recuperar conexion
+4a733c5 | 2026-10-27 16:02:14 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(sincronizacion): subir pendientes antes de descargar labores
+f4eb104 | 2026-10-27 15:44:52 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Merge pull request #4 from feature/labores-offline-logacho
+8d60f21 | 2026-10-27 15:44:07 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat: presentar labores y acciones segun privilegios
+4a87277 | 2026-10-27 15:44:00 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat: integrar API de labores y reglas de privilegios
+3fc2461 | 2026-10-27 15:43:53 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat: aislar y persistir labores agricolas por cuenta
+e8979db | 2026-10-27 15:27:30 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Integrar consulta local-first de lotes en develop
+795b770 | 2026-10-27 15:26:53 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(lotes): mostrar catalogo local y detalle en Android
+dbf401f | 2026-10-27 15:26:47 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(lotes): descargar paginas y conservar cache local
+2dacf4e | 2026-10-27 15:26:38 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(lotes): definir modelo y esquema SQLDelight
+20e5f7b | 2026-10-27 15:12:42 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Integrar autenticación Ktor y sesión segura en develop
+2a77289 | 2026-10-27 15:11:42 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(auth): integrar login y token cifrado en Android
+305b5c0 | 2026-10-27 15:11:35 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | feat(auth): definir contratos y cliente Ktor para sesion
+b7e0efe | 2026-10-27 15:00:27 -0500 | 07Ismael02 <ismaellogacho@gmail.com> | Integrar estructura KMP de AgroCampo en develop
+37d025d | 2026-10-27 14:59:42 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | chore: configurar Ktor Koin y SQLDelight en shared
+cec3429 | 2026-10-27 14:56:09 -0500 | Ismael Logacho <ismaellogacho@gmail.com> | chore: iniciar AgroCampo KMP con Compose y Gradle Wrapper

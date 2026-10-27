@@ -1,0 +1,10 @@
+# Resultados JUnit — :shared:testAndroidHostTest, develop dbaf20b, 2026-10-27T16:16:06-05:00
+testsuite name="pe.upeu.agrosierra.AutenticacionTest" tests="4" skipped="0" failures="0" errors="0"
+testsuite name="pe.upeu.agrosierra.LaborPersistenciaTest" tests="5" skipped="0" failures="0" errors="0"
+testsuite name="pe.upeu.agrosierra.LaborReglasTest" tests="2" skipped="0" failures="0" errors="0"
+testsuite name="pe.upeu.agrosierra.LaboresContratoTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="pe.upeu.agrosierra.LotesContratoTest" tests="4" skipped="0" failures="0" errors="0"
+testsuite name="pe.upeu.agrosierra.LotesLocalFirstTest" tests="6" skipped="0" failures="0" errors="0"
+testsuite name="pe.upeu.agrosierra.SincronizadorLaboresTest" tests="17" skipped="0" failures="0" errors="0"
+TOTAL tests=41 failures=0 errors=0
+assembleDebug: 16494699 bytes androidApp/build/outputs/apk/debug/androidApp-debug.apk

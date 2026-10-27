@@ -1,0 +1,21 @@
+# Informes Surefire existentes de AgroAPI (generados 2026-10-27 14:47, antes de esta sesión; NO reejecutados aquí)
+-------------------------------------------------------------------------------
+Test set: pe.upeu.agrosierra.ApiRestTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.988 s -- in pe.upeu.agrosierra.ApiRestTest
+-------------------------------------------------------------------------------
+Test set: pe.upeu.agrosierra.PersistenciaSemillaTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.901 s -- in pe.upeu.agrosierra.PersistenciaSemillaTest
+-------------------------------------------------------------------------------
+Test set: pe.upeu.agrosierra.ReglasNegocioTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.731 s -- in pe.upeu.agrosierra.ReglasNegocioTest
+-------------------------------------------------------------------------------
+Test set: pe.upeu.agrosierra.SeguridadJwtTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.951 s -- in pe.upeu.agrosierra.SeguridadJwtTest
+-------------------------------------------------------------------------------
+Test set: pe.upeu.agrosierra.ValidacionJsonTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.829 s -- in pe.upeu.agrosierra.ValidacionJsonTest

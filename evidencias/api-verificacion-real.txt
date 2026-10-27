@@ -1,0 +1,13 @@
+# Verificación real contra AgroAPI develop fa6b809, 2026-10-27T16:14:58-05:00, http://localhost:8080
+## POST /api/v1/auth/login (tecnico1)
+{"token":"<JWT omitido>","usuario":"tecnico1","rol":"TECNICO","privilegios":["LOTE_LEER","LABOR_LEER","LABOR_CREAR","LABOR_EDITAR"]}
+HTTP 200
+
+## GET /api/v1/usuarios/me
+{"id":1,"usuario":"tecnico1","rol":"TECNICO","privilegios":["LOTE_LEER","LABOR_LEER","LABOR_CREAR","LABOR_EDITAR"]}
+HTTP 200
+## GET /api/v1/lotes?pagina=0&tamanio=100 (resumen)
+totalElementos=8
+HTTP 200
+## GET /api/v1/usuarios/me sin token
+HTTP 401

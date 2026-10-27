@@ -1,0 +1,32 @@
+*   dbaf20b (HEAD -> docs/entrega-final-logacho, origin/develop, develop) Merge pull request #5 from 07Ismael02/feature/sincronizacion-offline-logacho
+|\  
+| * 82f8ce3 (origin/feature/sincronizacion-offline-logacho, feature/sincronizacion-offline-logacho) docs: documentar orden de sincronizacion y revision de envios inciertos
+| * 8c211f4 test(offline): cubrir registro sin red, errores, paginacion, reconexion y reinicio
+| * d5b4fcb feat(sincronizacion): mostrar rechazos y revisar envios inciertos
+| * 85637a2 fix(sincronizacion): distinguir rechazos del servidor de envios inciertos
+| * 728c886 test(sincronizacion): verificar orden, conciliacion y envios inciertos
+| * 8c384e5 feat(sincronizacion): sincronizar manualmente y al recuperar conexion
+| * 4a733c5 feat(sincronizacion): subir pendientes antes de descargar labores
+|/  
+*   f4eb104 Merge pull request #4 from feature/labores-offline-logacho
+|\  
+| * 8d60f21 (origin/feature/labores-offline-logacho, feature/labores-offline-logacho) feat: presentar labores y acciones segun privilegios
+| * 4a87277 feat: integrar API de labores y reglas de privilegios
+| * 3fc2461 feat: aislar y persistir labores agricolas por cuenta
+|/  
+*   e8979db Integrar consulta local-first de lotes en develop
+|\  
+| * 795b770 (origin/feature/lotes-sqldelight-logacho, feature/lotes-sqldelight-logacho) feat(lotes): mostrar catalogo local y detalle en Android
+| * dbf401f feat(lotes): descargar paginas y conservar cache local
+| * 2dacf4e feat(lotes): definir modelo y esquema SQLDelight
+|/  
+*   20e5f7b Integrar autenticación Ktor y sesión segura en develop
+|\  
+| * 2a77289 (origin/feature/autenticacion-ktor-logacho, feature/autenticacion-ktor-logacho) feat(auth): integrar login y token cifrado en Android
+| * 305b5c0 feat(auth): definir contratos y cliente Ktor para sesion
+|/  
+*   b7e0efe Integrar estructura KMP de AgroCampo en develop
+|\  
+| * 37d025d (origin/feature/estructura-kmp-logacho, feature/estructura-kmp-logacho) chore: configurar Ktor Koin y SQLDelight en shared
+|/  
+* cec3429 (origin/main, origin/HEAD, main) chore: iniciar AgroCampo KMP con Compose y Gradle Wrapper
