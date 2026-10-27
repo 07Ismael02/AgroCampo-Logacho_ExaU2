@@ -12,6 +12,6 @@ El módulo `shared` contiene código común Compose y un target Android. `androi
 
 Arquitectura prevista conforme a la sección 4.7 del PDF: `shared/src/commonMain/kotlin/pe/upeu/agrosierra/{domain/{model,repository,usecase},data/{remote/dto,local,repository},presentation/{sesion,listado,detalle,perfil,navigation,theme},di}` y `androidApp/src/main/kotlin/pe/upeu/agrosierra` para los adaptadores Android. Las capas se crearán al incorporar su funcionalidad real.
 
-Se usarán Ktor Client para el REST propio de AgroAPI, Koin para inyección y SQLDelight para persistencia local observable. El cliente REST, la seguridad y la sincronización no están implementados en esta fase.
+Ktor Client, Koin y SQLDelight están configurados como dependencias en `shared`, con `AgroDb` declarado para la generación posterior del esquema. Aún no se han implementado el cliente REST, tablas SQL, drivers, seguridad ni sincronización.
 
 Para verificar la base desde Windows, con Android SDK y Java 21: `./gradlew.bat :androidApp:assembleDebug --no-daemon --console=plain`.
