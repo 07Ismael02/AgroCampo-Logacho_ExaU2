@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,10 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pe.upeu.agrosierra.domain.model.Lote
 import pe.upeu.agrosierra.domain.model.UsuarioAutenticado
+import pe.upeu.agrosierra.presentation.detalle.LaborViewModel
+import pe.upeu.agrosierra.presentation.detalle.LaborScreen
 import kotlin.time.Instant
 
 @Composable
-fun LoteScreen(usuario: UsuarioAutenticado, viewModel: LoteViewModel, cerrarSesion: () -> Unit) {
+fun LoteScreen(usuario: UsuarioAutenticado, viewModel: LoteViewModel,
+               labores: LaborViewModel, cerrarSesion: () -> Unit) {
     val estado by viewModel.estado.collectAsState()
     var detalleId by remember { mutableStateOf<Long?>(null) }
     LaunchedEffect(usuario.id) { viewModel.sincronizar() }
@@ -43,9 +48,15 @@ fun LoteScreen(usuario: UsuarioAutenticado, viewModel: LoteViewModel, cerrarSesi
             OutlinedButton(onClick = cerrarSesion) { Text("Salir") }
         }
         if (detalleId != null) {
-            OutlinedButton(onClick = { detalleId = null; viewModel.cerrarDetalle() }) { Text("Volver a lotes") }
-            estado.detalle?.let { DetalleLote(it) } ?: Text("Cargando detalle…")
-            estado.aviso?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            OutlinedButton(onClick = { detalleId = null; viewModel.cerrarDetalle(); labores.desactivar() }) { Text("Volver a lotes") }
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                estado.detalle?.let {
+                    DetalleLote(it)
+                    if ("LABOR_LEER" in usuario.privilegios) LaborScreen(it, usuario, labores)
+                } ?: Text("Cargando detalle…")
+                estado.aviso?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            }
             return@Column
         }
         Text("Lotes", style = MaterialTheme.typography.headlineMedium)

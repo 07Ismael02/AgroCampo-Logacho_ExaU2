@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,9 +24,10 @@ import pe.upeu.agrosierra.presentation.sesion.SesionUiState
 import pe.upeu.agrosierra.presentation.sesion.SesionViewModel
 import pe.upeu.agrosierra.presentation.listado.LoteViewModel
 import pe.upeu.agrosierra.presentation.listado.LoteScreen
+import pe.upeu.agrosierra.presentation.detalle.LaborViewModel
 
 @Composable
-fun AgroApp(viewModel: SesionViewModel, lotes: LoteViewModel, configurado: Boolean) {
+fun AgroApp(viewModel: SesionViewModel, lotes: LoteViewModel, labores: LaborViewModel, configurado: Boolean) {
     val estado by viewModel.estado.collectAsState()
     MaterialTheme {
         Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
@@ -43,8 +45,9 @@ fun AgroApp(viewModel: SesionViewModel, lotes: LoteViewModel, configurado: Boole
                     Button(onClick = { viewModel.iniciar(usuario, contrasena) }, enabled = configurado) { Text("Iniciar sesión") }
                 }
                 is SesionUiState.Autenticado -> {
+                    DisposableEffect(actual.usuario.id) { onDispose { labores.desactivar() } }
                     if ("LOTE_LEER" in actual.usuario.privilegios) {
-                        LoteScreen(actual.usuario, lotes, viewModel::cerrar)
+                        LoteScreen(actual.usuario, lotes, labores, viewModel::cerrar)
                     } else {
                         Text("No tiene privilegio para consultar lotes")
                         Button(onClick = viewModel::cerrar) { Text("Cerrar sesión") }
