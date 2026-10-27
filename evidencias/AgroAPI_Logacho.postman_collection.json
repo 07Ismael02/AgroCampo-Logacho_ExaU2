@@ -8,6 +8,7 @@
     { "key": "baseUrl", "value": "http://localhost:8080/api/v1" },
     { "key": "tokenTecnico", "value": "" },
     { "key": "tokenJefe", "value": "" },
+    { "key": "tokenAdmin", "value": "" },
     { "key": "laborCreada", "value": "" }
   ],
   "item": [
@@ -37,6 +38,19 @@
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": { "mode": "raw", "raw": "{\"usuario\":\"jefe1\",\"contrasena\":\"Agro2026*\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "POST /auth/login admin (200)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('200 OK', () => pm.response.to.have.status(200));",
+            "pm.collectionVariables.set('tokenAdmin', pm.response.json().token);"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"usuario\":\"admin\",\"contrasena\":\"Agro2026*\"}" },
             "url": "{{baseUrl}}/auth/login"
           }
         },
@@ -156,6 +170,18 @@
             "method": "DELETE",
             "header": [{ "key": "Authorization", "value": "Bearer {{tokenTecnico}}" }],
             "url": "{{baseUrl}}/labores/1"
+          }
+        },
+        {
+          "name": "403 admin sin LABOR_CREAR - POST /labores",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('403 Forbidden', () => pm.response.to.have.status(403));"
+          ] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{tokenAdmin}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"loteId\":1,\"tipo\":\"RIEGO\",\"fecha\":\"2026-10-27\",\"cantidad\":1.0,\"observacion\":\"admin sin LABOR_CREAR\"}" },
+            "url": "{{baseUrl}}/labores"
           }
         },
         {
