@@ -12,7 +12,11 @@ import pe.upeu.agrosierra.data.local.BaseLocal
 import pe.upeu.agrosierra.data.local.LaborLocal
 import pe.upeu.agrosierra.data.remote.LaboresApi
 import pe.upeu.agrosierra.data.repository.LaborRepositorio
+import pe.upeu.agrosierra.data.repository.ColaLabores
+import pe.upeu.agrosierra.data.repository.SincronizadorLabores
 import pe.upeu.agrosierra.domain.repository.LaborRepository
+import pe.upeu.agrosierra.domain.repository.SincronizacionRepository
+import pe.upeu.agrosierra.domain.usecase.SincronizarUseCase
 import pe.upeu.agrosierra.presentation.detalle.LaborViewModel
 import pe.upeu.agrosierra.data.repository.LoteRepositorioLocalFirst
 import pe.upeu.agrosierra.domain.repository.LoteRepository
@@ -36,18 +40,21 @@ val dataModule = module {
     single { LaborLocal(get()) }
     single { LotesApi(get()) }
     single { LaboresApi(get()) }
+    single { ColaLabores() }
     single<LoteRepository> { LoteRepositorioLocalFirst(get(), get()) }
-    single<LaborRepository> { LaborRepositorio(get(), get(), get(), get(), get()) }
+    single<LaborRepository> { LaborRepositorio(get(), get(), get(), get(), get(), get()) }
+    single<SincronizacionRepository> { SincronizadorLabores(get(), get(), get(), get(), get(), get(), get()) }
 }
 
 val domainModule = module {
     factory { IniciarSesionUseCase(get()) }
     factory { RestaurarSesionUseCase(get()) }
     factory { CerrarSesionUseCase(get()) }
+    factory { SincronizarUseCase(get()) }
 }
 
 val presentationModule = module {
     single { SesionViewModel(get(), get(), get(), get(), get()) }
     single { LoteViewModel(get()) }
-    single { LaborViewModel(get()) }
+    single { LaborViewModel(get(), get(), get(), get()) }
 }

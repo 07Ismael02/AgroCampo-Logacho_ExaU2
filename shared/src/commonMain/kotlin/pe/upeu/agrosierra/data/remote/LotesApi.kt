@@ -10,26 +10,26 @@ import pe.upeu.agrosierra.domain.model.Lote
 
 class LotesApi(private val solicitudes: SolicitudesApi) {
     suspend fun pagina(numero: Int, tamanio: Int = 100, valle: String? = null,
-                       estado: Boolean? = null): PaginaDto<LoteDto> {
+                       estado: Boolean? = null, token: String? = null): PaginaDto<LoteDto> {
         val parametros = buildList {
             add("pagina=$numero")
             add("tamanio=$tamanio")
             valle?.let { add("valle=${it.encodeURLParameter()}") }
             estado?.let { add("estado=${if (it) "cerrada" else "abierta"}") }
         }.joinToString("&")
-        return solicitudes.getProtegido("api/v1/lotes?$parametros").body()
+        return solicitudes.getProtegido("api/v1/lotes?$parametros", token).body()
     }
 
     suspend fun detalle(id: Long): Lote = solicitudes.getProtegido("api/v1/lotes/$id")
         .body<LoteDto>().aDominio()
 
-    suspend fun todos(): List<Lote> {
+    suspend fun todos(token: String? = null): List<Lote> {
         val resultado = mutableListOf<Lote>()
         var pagina = 0
         var paginasEsperadas: Int? = null
         var totalEsperado: Long? = null
         while (pagina < 1000) {
-            val respuesta = pagina(pagina)
+            val respuesta = pagina(pagina, token = token)
             if (respuesta.pagina != pagina || respuesta.tamanio != 100 ||
                 respuesta.totalPaginas < 0 || respuesta.totalElementos < 0 ||
                 (paginasEsperadas != null && respuesta.totalPaginas != paginasEsperadas) ||

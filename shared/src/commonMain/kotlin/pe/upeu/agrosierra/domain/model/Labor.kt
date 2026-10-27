@@ -12,6 +12,7 @@ data class Labor(
     val observacion: String,
     val pendiente: Boolean,
     val operacionPendiente: OperacionPendiente? = null,
+    val motivoRechazo: String? = null,
 )
 
 enum class OperacionPendiente { CREAR, CREAR_INCIERTO, EDITAR }

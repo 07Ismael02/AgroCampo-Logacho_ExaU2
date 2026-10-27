@@ -13,6 +13,11 @@ import pe.upeu.agrosierra.domain.model.ErrorApi
 import pe.upeu.agrosierra.domain.model.ErrorApiException
 import pe.upeu.agrosierra.domain.model.Labor
 import pe.upeu.agrosierra.domain.repository.LaborRepository
+import pe.upeu.agrosierra.domain.repository.SincronizacionRepository
+import pe.upeu.agrosierra.domain.repository.ObservadorConexion
+import pe.upeu.agrosierra.domain.repository.reconexiones
+import pe.upeu.agrosierra.domain.usecase.SincronizarUseCase
+import kotlin.time.Instant
 
 data class LaborUiState(
     val labores: List<Labor> = emptyList(),
@@ -21,9 +26,19 @@ data class LaborUiState(
     val mensaje: String? = null,
     val erroresCampo: Map<String, String> = emptyMap(),
     val sinConexion: Boolean = false,
+    val sincronizando: Boolean = false,
+    val pendientes: Long = 0,
+    val inciertos: Long = 0,
+    val rechazadas: Long = 0,
+    val ultimaSincronizacion: Long? = null,
 )
 
-class LaborViewModel(private val repositorio: LaborRepository) {
+class LaborViewModel(
+    private val repositorio: LaborRepository,
+    private val sincronizacion: SincronizacionRepository,
+    private val sincronizarCaso: SincronizarUseCase,
+    private val conexion: ObservadorConexion,
+) {
     private var scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var observacion: Job? = null
     private var ownerId: Long? = null
@@ -31,16 +46,41 @@ class LaborViewModel(private val repositorio: LaborRepository) {
     private val mutable = MutableStateFlow(LaborUiState())
     val estado = mutable.asStateFlow()
 
+    fun activar(owner: Long) {
+        if (ownerId == owner) return
+        scope.cancel()
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        ownerId = owner
+        loteId = null
+        observacion = null
+        mutable.value = LaborUiState(cargando = false)
+        scope.launch { sincronizacion.observarPendientes(owner).collect { cantidad ->
+            mutable.update { it.copy(pendientes = cantidad) }
+        } }
+        scope.launch { sincronizacion.observarUltimaSincronizacion(owner).collect { instante ->
+            mutable.update { it.copy(ultimaSincronizacion = instante) }
+        } }
+        scope.launch { sincronizacion.observarInciertos(owner).collect { cantidad ->
+            mutable.update { it.copy(inciertos = cantidad) }
+        } }
+        scope.launch { sincronizacion.observarRechazadas(owner).collect { cantidad ->
+            mutable.update { it.copy(rechazadas = cantidad) }
+        } }
+        scope.launch { conexion.reconexiones().collect { if (ownerId == owner) sincronizar() } }
+    }
+
+    fun resolverIncierto(id: Long, existeEnServidor: Boolean) = ejecutar { owner ->
+        sincronizacion.resolverIncierto(owner, id, existeEnServidor)
+        mutable.update { it.copy(mensaje = if (existeEnServidor) "Copia local descartada; se descargará la del servidor"
+            else "Labor marcada para reenviar en la próxima sincronización") }
+    }
+
     fun abrir(owner: Long, lote: Long) {
-        if (ownerId != owner) {
-            scope.cancel()
-            scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-            ownerId = owner
-        }
+        activar(owner)
         if (loteId == lote && observacion?.isActive == true) return
         observacion?.cancel()
         loteId = lote
-        mutable.value = LaborUiState()
+        mutable.update { it.copy(labores = emptyList(), cargando = true, mensaje = null, erroresCampo = emptyMap()) }
         observacion = scope.launch {
             try {
                 repositorio.observar(owner, lote).collect { lista ->
@@ -48,7 +88,34 @@ class LaborViewModel(private val repositorio: LaborRepository) {
                 }
             } catch (e: ErrorApiException) { mostrar(e) }
         }
-        actualizar()
+        sincronizar()
+    }
+
+    fun cerrarDetalle() {
+        observacion?.cancel()
+        observacion = null
+        loteId = null
+        mutable.update { it.copy(labores = emptyList(), cargando = false) }
+    }
+
+    fun sincronizar() {
+        val owner = ownerId ?: return
+        if (mutable.value.sincronizando) return
+        scope.launch {
+            if (mutable.value.sincronizando) return@launch
+            mutable.update { it.copy(sincronizando = true, mensaje = null, erroresCampo = emptyMap()) }
+            try {
+                val resumen = sincronizarCaso(owner)
+                mutable.update { it.copy(mensaje = "Sincronizado: ${resumen.enviados} enviados, ${resumen.recibidos} recibidos",
+                    sinConexion = false) }
+            } catch (e: ErrorApiException) {
+                mostrar(e)
+            } catch (_: Exception) {
+                mutable.update { it.copy(mensaje = "No se pudo completar la sincronización") }
+            } finally {
+                mutable.update { it.copy(sincronizando = false, cargando = false) }
+            }
+        }
     }
 
     fun actualizar() = ejecutar { owner ->

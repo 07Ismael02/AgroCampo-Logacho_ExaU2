@@ -12,6 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +46,7 @@ fun AgroApp(viewModel: SesionViewModel, lotes: LoteViewModel, labores: LaborView
                     Button(onClick = { viewModel.iniciar(usuario, contrasena) }, enabled = configurado) { Text("Iniciar sesión") }
                 }
                 is SesionUiState.Autenticado -> {
+                    LaunchedEffect(actual.usuario.id) { labores.activar(actual.usuario.id) }
                     DisposableEffect(actual.usuario.id) { onDispose { labores.desactivar() } }
                     if ("LOTE_LEER" in actual.usuario.privilegios) {
                         LoteScreen(actual.usuario, lotes, labores, viewModel::cerrar)

@@ -20,43 +20,46 @@ class LaborRepositorio(
     private val remoto: LaboresApi,
     private val autenticacion: AuthRepository,
     private val red: EstadoRed,
+    private val cola: ColaLabores,
 ) : LaborRepository {
     override fun observar(ownerId: Long, loteId: Long): Flow<List<Labor>> {
         sesion(ownerId, "LABOR_LEER")
         return local.observar(ownerId, loteId)
     }
 
-    override suspend fun actualizar(ownerId: Long, loteId: Long): Int {
+    override suspend fun actualizar(ownerId: Long, loteId: Long): Int = cola.exclusivo {
         val actual = sesion(ownerId, "LABOR_LEER")
         val completas = remoto.todos(loteId, actual.token)
         vigente(actual)
         local.reemplazarDesdeServidor(ownerId, loteId, completas)
-        return completas.size
+        completas.size
     }
 
-    override suspend fun crear(ownerId: Long, labor: Labor): Labor {
+    override suspend fun crear(ownerId: Long, labor: Labor): Labor = cola.exclusivo {
         val actual = sesion(ownerId, "LABOR_CREAR")
         validarLabor(labor)
         val localNueva = local.guardarNueva(ownerId, labor.copy(responsable = actual.usuario))
-        if (!red.hayRed()) return localNueva
+        if (!red.hayRed()) return@exclusivo localNueva
         vigente(actual)
-        return try {
-            val confirmada = remoto.crear(localNueva, actual.token)
-            vigente(actual)
-            local.confirmarCreacion(ownerId, localNueva.id, confirmada)
-            confirmada
+        local.marcarCreacionIncierta(ownerId, localNueva.id) // También cubre cierre inesperado tras enviar.
+        val confirmada = try {
+            remoto.crear(localNueva, actual.token)
         } catch (e: ErrorApiException) {
             if (e.error is ErrorApi.SinConexion || e.error is ErrorApi.TiempoAgotado) {
-                // Una respuesta perdida deja incierto el resultado del POST; fase 8 no debe reenviarlo a ciegas.
-                vigente(actual)
-                local.marcarCreacionIncierta(ownerId, localNueva.id)
-                return requireNotNull(local.obtener(ownerId, localNueva.id))
+                return@exclusivo requireNotNull(local.obtener(ownerId, localNueva.id))
+            }
+            if (e.error.esRechazoDelServidor()) {
+                local.marcarCreacionLista(ownerId, localNueva.id)
+                local.registrarRechazo(ownerId, localNueva.id, e.error.mensaje)
             }
             throw e
         }
+        vigente(actual)
+        local.confirmarCreacion(ownerId, localNueva.id, confirmada)
+        confirmada
     }
 
-    override suspend fun editar(ownerId: Long, labor: Labor): Labor {
+    override suspend fun editar(ownerId: Long, labor: Labor): Labor = cola.exclusivo {
         val actual = sesion(ownerId, "LABOR_EDITAR")
         validarLabor(labor)
         val anterior = local.obtener(ownerId, labor.id)
@@ -67,19 +70,19 @@ class LaborRepositorio(
         if (labor.id < 0) {
             if (anterior.responsable != actual.usuario) throw ErrorApiException(ErrorApi.SinPrivilegio("Solo puede corregir su labor local"))
             vigente(actual)
-            return local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
+            return@exclusivo local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
         }
         if (anterior.pendiente) {
             if (actual.rol != "JEFE_CAMPO") throw ErrorApiException(ErrorApi.SinPrivilegio("Esta edición pendiente requiere verificación"))
             vigente(actual)
-            return local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
+            return@exclusivo local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
         }
         if (!red.hayRed()) {
             if (actual.rol != "JEFE_CAMPO") throw ErrorApiException(ErrorApi.SinConexion)
             vigente(actual)
-            return local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
+            return@exclusivo local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
         }
-        return try {
+        try {
             val confirmada = remoto.editar(labor, actual.token)
             vigente(actual)
             local.confirmarEdicion(ownerId, confirmada)
@@ -87,13 +90,13 @@ class LaborRepositorio(
         } catch (e: ErrorApiException) {
             if ((e.error is ErrorApi.SinConexion || e.error is ErrorApi.TiempoAgotado) && actual.rol == "JEFE_CAMPO") {
                 vigente(actual)
-                return local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
+                return@exclusivo local.guardarEdicionPendiente(ownerId, labor.copy(responsable = anterior.responsable))
             }
             throw e
         }
     }
 
-    override suspend fun eliminar(ownerId: Long, id: Long) {
+    override suspend fun eliminar(ownerId: Long, id: Long) = cola.exclusivo {
         val actual = sesion(ownerId, "LABOR_ELIMINAR")
         if (id < 0 || !red.hayRed()) throw ErrorApiException(ErrorApi.SinConexion)
         remoto.eliminar(id, actual.token)
@@ -110,7 +113,7 @@ class LaborRepositorio(
 
     private fun vigente(snapshot: Sesion) {
         val actual = autenticacion.sesionActual()
-        if (actual?.id != snapshot.id || actual?.token != snapshot.token) {
+        if (actual !== snapshot) {
             throw ErrorApiException(ErrorApi.NoAutorizado("La sesión cambió durante la operación"))
         }
     }
