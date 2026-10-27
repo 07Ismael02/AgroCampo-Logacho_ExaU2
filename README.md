@@ -26,6 +26,14 @@ La URL se establece fuera de Git en `local.properties` mediante `agro.api.baseUr
 
 El listado y los filtros consultan `agrocampo.db` mediante SQLDelight; el GET paginado de AgroAPI solo actualiza la base. La descarga revisa todas las páginas y reemplaza los lotes junto con la fecha de actualización en una transacción. Una página fallida, un 403 o una interrupción de red no borran los lotes guardados. Un 401 elimina el token vigente y devuelve al login. El detalle abre primero la copia local y después consulta `/api/v1/lotes/{id}`.
 
-El esquema incluye `lote`, `labor` y `sync_meta`. La tabla `labor` queda reservada para la fase posterior: todavía no hay CRUD ni sincronización de labores. La fecha de sincronización se guarda como milisegundos UTC y se muestra en formato ISO-8601. La caché de lotes es común a la instalación; todas las cuentas definidas en el examen tienen `LOTE_LEER`, pero antes de añadir datos privados o labores pendientes habrá que aislarlos por cuenta.
+El esquema incluye `lote`, `labor` y `sync_meta`. La fecha de sincronización de lotes se guarda como milisegundos UTC y se muestra en formato ISO-8601. La caché de lotes es común a la instalación; las labores se aíslan por el ID de cuenta confirmado por `/api/v1/usuarios/me`.
 
 El tráfico HTTP sin cifrar al host `10.0.2.2` está permitido solo en la variante `debug` del emulador. La variante de producción no incluye esa excepción. Para un dispositivo físico se debe usar un endpoint HTTPS válido o configurar una excepción de desarrollo específica para su dirección, sin ampliarla en producción.
+
+## Labores agrícolas (fase 7)
+
+El detalle del lote muestra labores desde SQLDelight y permite consultar todas las páginas de `GET /api/v1/lotes/{id}/labores`. Crear, editar y eliminar utilizan los contratos REST reales con JWT y respetan 201, 200 y 204. El formulario aplica validaciones locales para fecha, cantidad, campaña cerrada y dosis de fumigación; AgroAPI conserva la decisión final de las reglas RN-01 a RN-04.
+
+La migración `1.sqm` conserva las filas anteriores de `labor` en `labor_legacy` sin asignarles propietario. No se exponen ni se envían. Las nuevas filas usan `(ownerId, id)` como clave y `ownerId` procede exclusivamente de `/usuarios/me`. Los IDs de labores creadas sin red son negativos y las ediciones locales quedan marcadas como pendientes. Un técnico puede corregir su labor local pendiente. La edición offline de una labor remota se permite al jefe de campo; la restricción de 24 horas de un técnico requiere confirmación del servidor y, por ello, se valida online.
+
+Una creación online confirmada reconcilia el ID local con el positivo del servidor. Si el POST sale pero la respuesta se pierde, la operación se marca como **envío incierto** y no debe reenviarse automáticamente: el backend no ofrece clave de idempotencia. La subida completa de pendientes y la reconciliación posterior corresponden a la fase 8. La eliminación de labores no se encola sin red.

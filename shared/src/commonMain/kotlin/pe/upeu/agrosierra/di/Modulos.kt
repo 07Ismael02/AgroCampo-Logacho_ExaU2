@@ -9,6 +9,11 @@ import pe.upeu.agrosierra.data.local.InvalidacionesSesion
 import pe.upeu.agrosierra.data.remote.SolicitudesApi
 import pe.upeu.agrosierra.data.remote.LotesApi
 import pe.upeu.agrosierra.data.local.BaseLocal
+import pe.upeu.agrosierra.data.local.LaborLocal
+import pe.upeu.agrosierra.data.remote.LaboresApi
+import pe.upeu.agrosierra.data.repository.LaborRepositorio
+import pe.upeu.agrosierra.domain.repository.LaborRepository
+import pe.upeu.agrosierra.presentation.detalle.LaborViewModel
 import pe.upeu.agrosierra.data.repository.LoteRepositorioLocalFirst
 import pe.upeu.agrosierra.domain.repository.LoteRepository
 import pe.upeu.agrosierra.presentation.listado.LoteViewModel
@@ -28,8 +33,11 @@ val dataModule = module {
     single { SolicitudesApi(get<HttpClient>(), get<ApiConfig>(), get<Json>(), get(), get()) }
     single<AuthRepository> { AuthRepositorioRest(get(), get()) }
     single { BaseLocal(get()) }
+    single { LaborLocal(get()) }
     single { LotesApi(get()) }
+    single { LaboresApi(get()) }
     single<LoteRepository> { LoteRepositorioLocalFirst(get(), get()) }
+    single<LaborRepository> { LaborRepositorio(get(), get(), get(), get(), get()) }
 }
 
 val domainModule = module {
@@ -41,4 +49,5 @@ val domainModule = module {
 val presentationModule = module {
     single { SesionViewModel(get(), get(), get(), get(), get()) }
     single { LoteViewModel(get()) }
+    single { LaborViewModel(get()) }
 }

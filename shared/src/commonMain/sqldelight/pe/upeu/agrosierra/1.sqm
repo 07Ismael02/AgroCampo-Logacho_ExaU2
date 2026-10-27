@@ -1,0 +1,19 @@
+-- Actualización no destructiva de la versión 1: las labores sin propietario
+-- comprobado quedan intactas en labor_legacy y no se asignan a ninguna cuenta.
+ALTER TABLE labor RENAME TO labor_legacy;
+
+CREATE TABLE labor (
+    ownerId INTEGER NOT NULL,
+    id INTEGER NOT NULL,
+    loteId INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    fecha TEXT NOT NULL,
+    responsable TEXT NOT NULL,
+    cantidad REAL NOT NULL,
+    observacion TEXT NOT NULL,
+    pendiente INTEGER NOT NULL,
+    operacionPendiente TEXT,
+    creadoEpochMs INTEGER,
+    PRIMARY KEY (ownerId, id),
+    FOREIGN KEY (loteId) REFERENCES lote(id) ON DELETE RESTRICT
+);
