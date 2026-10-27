@@ -11,6 +11,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import kotlinx.serialization.json.Json
 import pe.upeu.agrosierra.data.local.AlmacenSeguro
+import pe.upeu.agrosierra.data.local.InvalidacionesSesion
 import pe.upeu.agrosierra.data.remote.dto.LoginPeticionDto
 import pe.upeu.agrosierra.domain.model.ErrorApi
 import pe.upeu.agrosierra.domain.model.ErrorApiException
@@ -21,6 +22,7 @@ class SolicitudesApi(
     private val config: ApiConfig,
     private val json: Json,
     private val almacen: AlmacenSeguro,
+    private val invalidaciones: InvalidacionesSesion = InvalidacionesSesion(),
 ) {
     suspend fun postPublico(path: String, body: LoginPeticionDto): HttpResponse {
         val respuesta = traducirFalloRed {
@@ -41,7 +43,15 @@ class SolicitudesApi(
                 header(HttpHeaders.Authorization, "Bearer $usado")
             }
         }
-        comprobarRespuesta(respuesta, json)
+        try {
+            comprobarRespuesta(respuesta, json)
+        } catch (e: ErrorApiException) {
+            if (e.error is ErrorApi.NoAutorizado && almacen.leerToken() == usado) {
+                almacen.borrarToken()
+                invalidaciones.avisar(usado)
+            }
+            throw e
+        }
         return respuesta
     }
 }
