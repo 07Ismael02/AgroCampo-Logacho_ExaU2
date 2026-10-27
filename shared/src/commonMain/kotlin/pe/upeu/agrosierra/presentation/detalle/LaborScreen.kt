@@ -37,6 +37,7 @@ fun LaborScreen(lote: Lote, usuario: UsuarioAutenticado, viewModel: LaborViewMod
     var formulario by remember(lote.id, usuario.id) { mutableStateOf(false) }
     var editando by remember(lote.id, usuario.id) { mutableStateOf<Labor?>(null) }
     var eliminar by remember(lote.id, usuario.id) { mutableStateOf<Labor?>(null) }
+    var revisar by remember(lote.id, usuario.id) { mutableStateOf<Labor?>(null) }
     LaunchedEffect(lote.id, usuario.id) { viewModel.abrir(usuario.id, lote.id) }
     LaunchedEffect(estado.mensaje) {
         if (estado.mensaje in setOf("Labor registrada", "Labor guardada pendiente de envío",
@@ -54,6 +55,10 @@ fun LaborScreen(lote: Lote, usuario: UsuarioAutenticado, viewModel: LaborViewMod
         }
         if (estado.procesando || estado.cargando || estado.sincronizando) CircularProgressIndicator()
         Text("Pendientes de esta cuenta: ${estado.pendientes}")
+        if (estado.rechazadas > 0) Text("Rechazadas por el servidor: ${estado.rechazadas}",
+            color = MaterialTheme.colorScheme.error)
+        if (estado.inciertos > 0) Text("Envíos inciertos por revisar: ${estado.inciertos}",
+            color = MaterialTheme.colorScheme.error)
         Text(estado.ultimaSincronizacion?.let {
             "Última sincronización completa: ${kotlin.time.Instant.fromEpochMilliseconds(it)}"
         } ?: "Labores nunca sincronizadas")
@@ -74,7 +79,11 @@ fun LaborScreen(lote: Lote, usuario: UsuarioAutenticado, viewModel: LaborViewMod
                         if (labor.observacion.isNotBlank()) Text(labor.observacion)
                         if (labor.pendiente) Text(if (labor.operacionPendiente == OperacionPendiente.CREAR_INCIERTO)
                             "Envío incierto: verificar antes de reenviar" else "Pendiente de envío")
+                        labor.motivoRechazo?.let { Text("Rechazada: $it", color = MaterialTheme.colorScheme.error) }
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (labor.operacionPendiente == OperacionPendiente.CREAR_INCIERTO) {
+                                OutlinedButton(onClick = { revisar = labor }) { Text("Revisar envío") }
+                            }
                             val editarPermitido = "LABOR_EDITAR" in usuario.privilegios && !lote.campaniaCerrada &&
                                 (usuario.rol == "JEFE_CAMPO" || labor.responsable == usuario.usuario)
                             if (editarPermitido) OutlinedButton(onClick = { editando = labor; formulario = true }) { Text("Editar") }
@@ -91,6 +100,18 @@ fun LaborScreen(lote: Lote, usuario: UsuarioAutenticado, viewModel: LaborViewMod
         title = { Text("Eliminar labor") }, text = { Text("¿Confirma la eliminación de la labor ${labor.id}?") },
         confirmButton = { TextButton(onClick = { viewModel.eliminar(labor.id); eliminar = null }) { Text("Eliminar") } },
         dismissButton = { TextButton(onClick = { eliminar = null }) { Text("Cancelar") } }) }
+    revisar?.let { labor -> AlertDialog(onDismissRequest = { revisar = null },
+        title = { Text("Envío incierto") },
+        text = { Text("El servidor pudo registrar esta labor (${labor.tipo} · ${labor.fecha} · ${labor.cantidad}) " +
+            "sin que llegara su respuesta. Consulte las labores del lote en AgroAPI con el responsable antes de decidir; " +
+            "una coincidencia de campos no basta para asegurar que es la misma labor.") },
+        confirmButton = { Column {
+            TextButton(onClick = { viewModel.resolverIncierto(labor.id, existeEnServidor = true); revisar = null }) {
+                Text("Ya existe: descartar copia local") }
+            TextButton(onClick = { viewModel.resolverIncierto(labor.id, existeEnServidor = false); revisar = null }) {
+                Text("No existe: reenviar") }
+        } },
+        dismissButton = { TextButton(onClick = { revisar = null }) { Text("Cancelar") } }) }
 }
 
 @Composable

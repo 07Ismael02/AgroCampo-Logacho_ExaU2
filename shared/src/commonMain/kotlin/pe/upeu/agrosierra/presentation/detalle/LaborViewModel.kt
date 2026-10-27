@@ -15,6 +15,7 @@ import pe.upeu.agrosierra.domain.model.Labor
 import pe.upeu.agrosierra.domain.repository.LaborRepository
 import pe.upeu.agrosierra.domain.repository.SincronizacionRepository
 import pe.upeu.agrosierra.domain.repository.ObservadorConexion
+import pe.upeu.agrosierra.domain.repository.reconexiones
 import pe.upeu.agrosierra.domain.usecase.SincronizarUseCase
 import kotlin.time.Instant
 
@@ -27,6 +28,8 @@ data class LaborUiState(
     val sinConexion: Boolean = false,
     val sincronizando: Boolean = false,
     val pendientes: Long = 0,
+    val inciertos: Long = 0,
+    val rechazadas: Long = 0,
     val ultimaSincronizacion: Long? = null,
 )
 
@@ -57,9 +60,19 @@ class LaborViewModel(
         scope.launch { sincronizacion.observarUltimaSincronizacion(owner).collect { instante ->
             mutable.update { it.copy(ultimaSincronizacion = instante) }
         } }
-        scope.launch { conexion.cambios().collect { disponible ->
-            if (disponible && ownerId == owner) sincronizar()
+        scope.launch { sincronizacion.observarInciertos(owner).collect { cantidad ->
+            mutable.update { it.copy(inciertos = cantidad) }
         } }
+        scope.launch { sincronizacion.observarRechazadas(owner).collect { cantidad ->
+            mutable.update { it.copy(rechazadas = cantidad) }
+        } }
+        scope.launch { conexion.reconexiones().collect { if (ownerId == owner) sincronizar() } }
+    }
+
+    fun resolverIncierto(id: Long, existeEnServidor: Boolean) = ejecutar { owner ->
+        sincronizacion.resolverIncierto(owner, id, existeEnServidor)
+        mutable.update { it.copy(mensaje = if (existeEnServidor) "Copia local descartada; se descargará la del servidor"
+            else "Labor marcada para reenviar en la próxima sincronización") }
     }
 
     fun abrir(owner: Long, lote: Long) {
