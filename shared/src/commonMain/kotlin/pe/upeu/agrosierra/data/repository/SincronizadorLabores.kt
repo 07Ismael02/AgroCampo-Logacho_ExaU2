@@ -29,6 +29,8 @@ class SincronizadorLabores(
 ) : SincronizacionRepository {
     override fun observarPendientes(ownerId: Long): Flow<Long> = local.observarCantidadPendiente(ownerId)
     override fun observarUltimaSincronizacion(ownerId: Long): Flow<Long?> = local.observarUltimaSincronizacion(ownerId)
+    override fun observarInciertos(ownerId: Long): Flow<Long> = local.observarInciertos(ownerId)
+    override fun observarRechazadas(ownerId: Long): Flow<Long> = local.observarRechazadas(ownerId)
 
     override suspend fun sincronizar(ownerId: Long): ResumenSincronizacion = cola.exclusivo {
         val sesion = autenticacion.sesionActual()
@@ -51,27 +53,33 @@ class SincronizadorLabores(
                     if ("LABOR_CREAR" !in sesion.privilegios) throw ErrorApiException(ErrorApi.SinPrivilegio("No puede registrar labores"))
                     // Persistir la incertidumbre antes de salir a la red cubre cierre del proceso o respuesta perdida.
                     local.marcarCreacionIncierta(ownerId, pendiente.labor.id)
-                    try {
-                        val remota = laboresApi.crear(pendiente.labor, sesion.token)
-                        vigente(sesion)
-                        if (remota.id <= 0 || remota.loteId != pendiente.labor.loteId || remota.pendiente) {
-                            throw ErrorApiException(ErrorApi.Servidor("Respuesta de creación inconsistente"))
-                        }
-                        local.confirmarCreacion(ownerId, pendiente.labor.id, remota)
-                        enviados++
+                    val remota = try {
+                        laboresApi.crear(pendiente.labor, sesion.token)
                     } catch (e: ErrorApiException) {
-                        // 400/403/404/409 son rechazos explícitos: este POST no creó la labor.
-                        if (e.error is ErrorApi.Validacion || e.error is ErrorApi.SinPrivilegio ||
-                            e.error is ErrorApi.NoEncontrado || e.error is ErrorApi.Conflicto) {
-                            vigente(sesion)
+                        // Solo una respuesta de rechazo del servidor prueba que este POST no creó la labor;
+                        // sin conexión, tiempo agotado o 500 lo dejan incierto.
+                        if (e.error.esRechazoDelServidor()) {
                             local.marcarCreacionLista(ownerId, pendiente.labor.id)
+                            local.registrarRechazo(ownerId, pendiente.labor.id, e.error.mensaje)
                         }
                         throw e
                     }
+                    vigente(sesion)
+                    if (remota.id <= 0 || remota.loteId != pendiente.labor.loteId || remota.pendiente) {
+                        throw ErrorApiException(ErrorApi.Servidor("Respuesta de creación inconsistente"))
+                    }
+                    local.confirmarCreacion(ownerId, pendiente.labor.id, remota)
+                    enviados++
                 }
                 OperacionPendiente.EDITAR -> {
                     if ("LABOR_EDITAR" !in sesion.privilegios) throw ErrorApiException(ErrorApi.SinPrivilegio("No puede editar labores"))
-                    val remota = laboresApi.editar(pendiente.labor, sesion.token)
+                    // PUT es idempotente: ante un fallo de red la edición queda pendiente y se reintenta.
+                    val remota = try {
+                        laboresApi.editar(pendiente.labor, sesion.token)
+                    } catch (e: ErrorApiException) {
+                        if (e.error.esRechazoDelServidor()) local.registrarRechazo(ownerId, pendiente.labor.id, e.error.mensaje)
+                        throw e
+                    }
                     vigente(sesion)
                     if (remota.id != pendiente.labor.id || remota.loteId != pendiente.labor.loteId || remota.pendiente) {
                         throw ErrorApiException(ErrorApi.Servidor("Respuesta de edición inconsistente"))
@@ -96,9 +104,19 @@ class SincronizadorLabores(
         ResumenSincronizacion(enviados, labores.values.sumOf { it.size }, lotes.size, instante)
     }
 
+    override suspend fun resolverIncierto(ownerId: Long, id: Long, existeEnServidor: Boolean) = cola.exclusivo {
+        val sesion = autenticacion.sesionActual()
+        if (sesion?.id != ownerId || ownerId <= 0) throw ErrorApiException(ErrorApi.NoAutorizado("Debe iniciar sesión"))
+        if (existeEnServidor) local.descartarIncierta(ownerId, id) else local.marcarCreacionLista(ownerId, id)
+    }
+
     private fun vigente(snapshot: Sesion) {
         if (autenticacion.sesionActual() !== snapshot) {
             throw ErrorApiException(ErrorApi.NoAutorizado("La sesión cambió durante la sincronización"))
         }
     }
 }
+
+/** 400, 401, 403, 404 y 409 los emite el servidor sin ejecutar la operación. */
+internal fun ErrorApi.esRechazoDelServidor() = this is ErrorApi.Validacion || this is ErrorApi.NoAutorizado ||
+    this is ErrorApi.SinPrivilegio || this is ErrorApi.NoEncontrado || this is ErrorApi.Conflicto

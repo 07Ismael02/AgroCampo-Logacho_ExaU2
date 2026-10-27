@@ -82,6 +82,24 @@ class LaborLocal(private val db: AgroDb) {
         }
     }
 
+    /** Conserva la fila pendiente y deja visible por qué el servidor la rechazó. */
+    fun registrarRechazo(ownerId: Long, id: Long, motivo: String) = q.registrarRechazo(motivo, ownerId, id)
+
+    fun observarInciertos(ownerId: Long): Flow<Long> =
+        q.contarInciertos(ownerId).asFlow().mapToOne(Dispatchers.Default)
+
+    fun observarRechazadas(ownerId: Long): Flow<Long> =
+        q.contarRechazadas(ownerId).asFlow().mapToOne(Dispatchers.Default)
+
+    /** El usuario comprobó en AgroAPI que la labor sí se creó: la copia remota llegará con la descarga. */
+    fun descartarIncierta(ownerId: Long, id: Long) {
+        db.transaction {
+            val previa = requireNotNull(q.obtenerLabor(ownerId, id).executeAsOneOrNull())
+            require(id < 0 && previa.operacionPendiente == OperacionPendiente.CREAR_INCIERTO.name)
+            q.borrarLabor(ownerId, id)
+        }
+    }
+
     /** Aplica una descarga completa solo después de recibir y verificar todas las páginas. */
     fun aplicarDescargaCompleta(ownerId: Long, lotes: List<Lote>, labores: Map<Long, List<Labor>>, instante: Long) {
         require(ownerId > 0 && lotes.map(Lote::id).toSet().size == lotes.size)
@@ -152,4 +170,4 @@ class LaborLocal(private val db: AgroDb) {
 }
 
 private fun FilaLabor.aDominio() = Labor(id, loteId, TipoLabor.valueOf(tipo), fecha, responsable,
-    cantidad, observacion, pendiente != 0L, operacionPendiente?.let(OperacionPendiente::valueOf))
+    cantidad, observacion, pendiente != 0L, operacionPendiente?.let(OperacionPendiente::valueOf), motivoRechazo)

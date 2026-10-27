@@ -42,24 +42,21 @@ class LaborRepositorio(
         if (!red.hayRed()) return@exclusivo localNueva
         vigente(actual)
         local.marcarCreacionIncierta(ownerId, localNueva.id) // También cubre cierre inesperado tras enviar.
-        try {
-            val confirmada = remoto.crear(localNueva, actual.token)
-            vigente(actual)
-            local.confirmarCreacion(ownerId, localNueva.id, confirmada)
-            confirmada
+        val confirmada = try {
+            remoto.crear(localNueva, actual.token)
         } catch (e: ErrorApiException) {
             if (e.error is ErrorApi.SinConexion || e.error is ErrorApi.TiempoAgotado) {
-                vigente(actual)
-                requireNotNull(local.obtener(ownerId, localNueva.id))
-            } else {
-                if (e.error is ErrorApi.Validacion || e.error is ErrorApi.SinPrivilegio ||
-                    e.error is ErrorApi.NoEncontrado || e.error is ErrorApi.Conflicto) {
-                    vigente(actual)
-                    local.marcarCreacionLista(ownerId, localNueva.id)
-                }
-                throw e
+                return@exclusivo requireNotNull(local.obtener(ownerId, localNueva.id))
             }
+            if (e.error.esRechazoDelServidor()) {
+                local.marcarCreacionLista(ownerId, localNueva.id)
+                local.registrarRechazo(ownerId, localNueva.id, e.error.mensaje)
+            }
+            throw e
         }
+        vigente(actual)
+        local.confirmarCreacion(ownerId, localNueva.id, confirmada)
+        confirmada
     }
 
     override suspend fun editar(ownerId: Long, labor: Labor): Labor = cola.exclusivo {

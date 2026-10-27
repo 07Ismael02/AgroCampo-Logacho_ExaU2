@@ -84,7 +84,7 @@ class LaborPersistenciaTest {
             driver.execute(null, "CREATE TABLE sync_meta (clave TEXT NOT NULL PRIMARY KEY, instanteEpochMs INTEGER NOT NULL)", 0)
             driver.execute(null, "INSERT INTO lote VALUES (1,'L-1','Lote uno',2.0,'Papa','Mantaro',0,3.0)", 0)
             driver.execute(null, "INSERT INTO labor VALUES (-1,1,'RIEGO','2026-10-27','sin-propietario',1.0,'antigua',1)", 0)
-            AgroDb.Schema.migrate(driver, 1, 2)
+            AgroDb.Schema.migrate(driver, 1, AgroDb.Schema.version)
             val db = AgroDb(driver)
             assertEquals(1L, db.agroDbQueries.contarLaboresLegadas().executeAsOne())
             assertTrue(LaborLocal(db).pendientes(7).isEmpty())

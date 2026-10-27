@@ -21,6 +21,7 @@ CREATE TABLE labor (
     pendiente INTEGER NOT NULL,
     operacionPendiente TEXT,
     creadoEpochMs INTEGER,
+    motivoRechazo TEXT,
     PRIMARY KEY (ownerId, id),
     FOREIGN KEY (loteId) REFERENCES lote(id) ON DELETE RESTRICT
 );
@@ -91,8 +92,9 @@ SELECT * FROM labor WHERE ownerId = :ownerId AND loteId = :loteId ORDER BY fecha
 obtenerLabor:
 SELECT * FROM labor WHERE ownerId = :ownerId AND id = :id;
 
+-- Los IDs locales decrecen al crearse: ante el mismo instante, -1 se envía antes que -2.
 listarPendientes:
-SELECT * FROM labor WHERE ownerId = :ownerId AND pendiente = 1 ORDER BY creadoEpochMs, id;
+SELECT * FROM labor WHERE ownerId = :ownerId AND pendiente = 1 ORDER BY creadoEpochMs, id DESC;
 
 contarPendientes:
 SELECT COUNT(*) FROM labor WHERE ownerId = :ownerId AND pendiente = 1;
@@ -116,3 +118,12 @@ SELECT COALESCE(MIN(id), 0) FROM labor WHERE ownerId = ?;
 
 contarLaboresLegadas:
 SELECT COUNT(*) FROM labor_legacy;
+
+contarInciertos:
+SELECT COUNT(*) FROM labor WHERE ownerId = :ownerId AND operacionPendiente = 'CREAR_INCIERTO';
+
+contarRechazadas:
+SELECT COUNT(*) FROM labor WHERE ownerId = :ownerId AND pendiente = 1 AND motivoRechazo IS NOT NULL;
+
+registrarRechazo:
+UPDATE labor SET motivoRechazo = :motivo WHERE ownerId = :ownerId AND id = :id AND pendiente = 1;
