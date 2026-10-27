@@ -49,9 +49,14 @@ fun LaborScreen(lote: Lote, usuario: UsuarioAutenticado, viewModel: LaborViewMod
             if ("LABOR_CREAR" in usuario.privilegios && !lote.campaniaCerrada) {
                 Button(onClick = { editando = null; formulario = true }) { Text("Registrar labor") }
             }
-            OutlinedButton(onClick = viewModel::actualizar, enabled = !estado.procesando) { Text("Actualizar") }
+            OutlinedButton(onClick = viewModel::sincronizar,
+                enabled = !estado.procesando && !estado.sincronizando) { Text("Sincronizar") }
         }
-        if (estado.procesando || estado.cargando) CircularProgressIndicator()
+        if (estado.procesando || estado.cargando || estado.sincronizando) CircularProgressIndicator()
+        Text("Pendientes de esta cuenta: ${estado.pendientes}")
+        Text(estado.ultimaSincronizacion?.let {
+            "Última sincronización completa: ${kotlin.time.Instant.fromEpochMilliseconds(it)}"
+        } ?: "Labores nunca sincronizadas")
         if (estado.sinConexion) Text("Sin conexión. Se muestran labores guardadas.")
         estado.mensaje?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         if (formulario) {

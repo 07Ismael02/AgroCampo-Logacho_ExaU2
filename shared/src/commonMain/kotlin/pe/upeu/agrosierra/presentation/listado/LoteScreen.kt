@@ -48,7 +48,7 @@ fun LoteScreen(usuario: UsuarioAutenticado, viewModel: LoteViewModel,
             OutlinedButton(onClick = cerrarSesion) { Text("Salir") }
         }
         if (detalleId != null) {
-            OutlinedButton(onClick = { detalleId = null; viewModel.cerrarDetalle(); labores.desactivar() }) { Text("Volver a lotes") }
+            OutlinedButton(onClick = { detalleId = null; viewModel.cerrarDetalle(); labores.cerrarDetalle() }) { Text("Volver a lotes") }
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 estado.detalle?.let {
@@ -68,6 +68,15 @@ fun LoteScreen(usuario: UsuarioAutenticado, viewModel: LoteViewModel,
         Button(onClick = viewModel::sincronizar, enabled = !estado.sincronizando) {
             Text(if (estado.sincronizando) "Actualizando…" else "Actualizar")
         }
+        val estadoLabores by labores.estado.collectAsState()
+        Button(onClick = labores::sincronizar, enabled = !estadoLabores.sincronizando) {
+            Text(if (estadoLabores.sincronizando) "Sincronizando labores…" else "Sincronizar labores")
+        }
+        Text("Labores pendientes: ${estadoLabores.pendientes}")
+        Text(estadoLabores.ultimaSincronizacion?.let {
+            "Labores sincronizadas: ${Instant.fromEpochMilliseconds(it)}"
+        } ?: "Labores nunca sincronizadas")
+        estadoLabores.mensaje?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         if (estado.sincronizando) CircularProgressIndicator()
         OutlinedTextField(value = estado.filtro.busqueda, onValueChange = viewModel::buscar,
             label = { Text("Buscar código o nombre") }, modifier = Modifier.fillMaxWidth())
