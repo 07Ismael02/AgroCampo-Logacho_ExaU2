@@ -5,7 +5,13 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import pe.upeu.agrosierra.data.remote.ApiConfig
+import pe.upeu.agrosierra.data.local.InvalidacionesSesion
 import pe.upeu.agrosierra.data.remote.SolicitudesApi
+import pe.upeu.agrosierra.data.remote.LotesApi
+import pe.upeu.agrosierra.data.local.BaseLocal
+import pe.upeu.agrosierra.data.repository.LoteRepositorioLocalFirst
+import pe.upeu.agrosierra.domain.repository.LoteRepository
+import pe.upeu.agrosierra.presentation.listado.LoteViewModel
 import pe.upeu.agrosierra.data.repository.AuthRepositorioRest
 import pe.upeu.agrosierra.domain.repository.AuthRepository
 import pe.upeu.agrosierra.domain.usecase.CerrarSesionUseCase
@@ -18,8 +24,12 @@ val redModule = module {
 }
 
 val dataModule = module {
-    single { SolicitudesApi(get<HttpClient>(), get<ApiConfig>(), get<Json>(), get()) }
+    single { InvalidacionesSesion() }
+    single { SolicitudesApi(get<HttpClient>(), get<ApiConfig>(), get<Json>(), get(), get()) }
     single<AuthRepository> { AuthRepositorioRest(get(), get()) }
+    single { BaseLocal(get()) }
+    single { LotesApi(get()) }
+    single<LoteRepository> { LoteRepositorioLocalFirst(get(), get()) }
 }
 
 val domainModule = module {
@@ -29,5 +39,6 @@ val domainModule = module {
 }
 
 val presentationModule = module {
-    single { SesionViewModel(get(), get(), get()) }
+    single { SesionViewModel(get(), get(), get(), get(), get()) }
+    single { LoteViewModel(get()) }
 }

@@ -6,13 +6,15 @@ import androidx.activity.compose.setContent
 import org.koin.core.context.GlobalContext
 import pe.upeu.agrosierra.data.remote.ApiConfig
 import pe.upeu.agrosierra.presentation.sesion.SesionViewModel
+import pe.upeu.agrosierra.presentation.listado.LoteViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val koin = GlobalContext.get()
         val viewModel = koin.get<SesionViewModel>()
+        val lotes = koin.get<LoteViewModel>()
         val configurado = koin.get<ApiConfig>().configurado
-        setContent { AgroApp(viewModel, configurado) }
+        setContent { AgroApp(viewModel, lotes, configurado) }
     }
 }

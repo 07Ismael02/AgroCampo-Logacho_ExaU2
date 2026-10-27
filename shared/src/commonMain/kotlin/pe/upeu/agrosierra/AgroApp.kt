@@ -21,9 +21,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import pe.upeu.agrosierra.presentation.sesion.SesionUiState
 import pe.upeu.agrosierra.presentation.sesion.SesionViewModel
+import pe.upeu.agrosierra.presentation.listado.LoteViewModel
+import pe.upeu.agrosierra.presentation.listado.LoteScreen
 
 @Composable
-fun AgroApp(viewModel: SesionViewModel, configurado: Boolean) {
+fun AgroApp(viewModel: SesionViewModel, lotes: LoteViewModel, configurado: Boolean) {
     val estado by viewModel.estado.collectAsState()
     MaterialTheme {
         Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
@@ -41,11 +43,12 @@ fun AgroApp(viewModel: SesionViewModel, configurado: Boolean) {
                     Button(onClick = { viewModel.iniciar(usuario, contrasena) }, enabled = configurado) { Text("Iniciar sesión") }
                 }
                 is SesionUiState.Autenticado -> {
-                    Text("Sesión iniciada", style = MaterialTheme.typography.headlineMedium)
-                    Text("Usuario: ${actual.usuario.usuario}")
-                    Text("Rol: ${actual.usuario.rol}")
-                    Text("Privilegios: ${actual.usuario.privilegios.sorted().joinToString()}")
-                    Button(onClick = viewModel::cerrar) { Text("Cerrar sesión") }
+                    if ("LOTE_LEER" in actual.usuario.privilegios) {
+                        LoteScreen(actual.usuario, lotes, viewModel::cerrar)
+                    } else {
+                        Text("No tiene privilegio para consultar lotes")
+                        Button(onClick = viewModel::cerrar) { Text("Cerrar sesión") }
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import pe.upeu.agrosierra.domain.model.ErrorApi
 import pe.upeu.agrosierra.domain.model.ErrorApiException
@@ -13,6 +14,8 @@ import pe.upeu.agrosierra.domain.model.UsuarioAutenticado
 import pe.upeu.agrosierra.domain.usecase.CerrarSesionUseCase
 import pe.upeu.agrosierra.domain.usecase.IniciarSesionUseCase
 import pe.upeu.agrosierra.domain.usecase.RestaurarSesionUseCase
+import pe.upeu.agrosierra.domain.repository.AuthRepository
+import pe.upeu.agrosierra.data.local.InvalidacionesSesion
 
 sealed interface SesionUiState {
     data object Cargando : SesionUiState
@@ -24,12 +27,24 @@ class SesionViewModel(
     private val iniciar: IniciarSesionUseCase,
     private val restaurar: RestaurarSesionUseCase,
     private val cerrar: CerrarSesionUseCase,
+    private val repositorio: AuthRepository,
+    private val invalidaciones: InvalidacionesSesion,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val mutable = MutableStateFlow<SesionUiState>(SesionUiState.Cargando)
     val estado = mutable.asStateFlow()
 
-    init { restaurar() }
+    init {
+        scope.launch {
+            invalidaciones.tokens.collect { rechazado ->
+                if (repositorio.sesionActual()?.token == rechazado) {
+                    cerrar.invoke()
+                    mutable.value = SesionUiState.Login()
+                }
+            }
+        }
+        restaurar()
+    }
 
     fun restaurar() = scope.launch {
         mutable.value = SesionUiState.Cargando
