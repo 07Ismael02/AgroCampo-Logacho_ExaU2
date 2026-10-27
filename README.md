@@ -20,4 +20,12 @@ Para verificar la base desde Windows, con Android SDK y Java 21: `./gradlew.bat 
 
 El login usa `POST /api/v1/auth/login` con `usuario` y `contrasena`; la identidad se confirma con `GET /api/v1/usuarios/me`. El token se guarda cifrado con una clave de Android Keystore, se comprueba al reabrir y se elimina al cerrar sesión o al recibir 401. Una respuesta 403 conserva la sesión. No se registran cuerpos ni cabeceras HTTP en Logcat.
 
-La URL se establece fuera de Git en `local.properties` mediante `agro.api.baseUrl`. En el emulador Android se puede usar `http://10.0.2.2:8080`; en un dispositivo físico se utiliza la dirección LAN accesible del equipo. Si la propiedad falta, la pantalla informa que se debe configurar y deshabilita el login. El backend debe estar iniciado por separado. La pantalla protegida actual muestra únicamente la identidad real; lotes, labores y SQLDelight quedan para fases posteriores.
+La URL se establece fuera de Git en `local.properties` mediante `agro.api.baseUrl`. En el emulador Android se puede usar `http://10.0.2.2:8080`; en un dispositivo físico se utiliza una dirección accesible del equipo. Si la propiedad falta, la pantalla informa que se debe configurar y deshabilita el login. El backend debe estar iniciado por separado.
+
+## Lotes locales (fase 6)
+
+El listado y los filtros consultan `agrocampo.db` mediante SQLDelight; el GET paginado de AgroAPI solo actualiza la base. La descarga revisa todas las páginas y reemplaza los lotes junto con la fecha de actualización en una transacción. Una página fallida, un 403 o una interrupción de red no borran los lotes guardados. Un 401 elimina el token vigente y devuelve al login. El detalle abre primero la copia local y después consulta `/api/v1/lotes/{id}`.
+
+El esquema incluye `lote`, `labor` y `sync_meta`. La tabla `labor` queda reservada para la fase posterior: todavía no hay CRUD ni sincronización de labores. La fecha de sincronización se guarda como milisegundos UTC y se muestra en formato ISO-8601. La caché de lotes es común a la instalación; todas las cuentas definidas en el examen tienen `LOTE_LEER`, pero antes de añadir datos privados o labores pendientes habrá que aislarlos por cuenta.
+
+El tráfico HTTP sin cifrar al host `10.0.2.2` está permitido solo en la variante `debug` del emulador. La variante de producción no incluye esa excepción. Para un dispositivo físico se debe usar un endpoint HTTPS válido o configurar una excepción de desarrollo específica para su dirección, sin ampliarla en producción.
