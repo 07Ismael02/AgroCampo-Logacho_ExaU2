@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +32,8 @@ import pe.upeu.agrosierra.presentation.detalle.LaborViewModel
 fun AgroApp(viewModel: SesionViewModel, lotes: LoteViewModel, labores: LaborViewModel, configurado: Boolean) {
     val estado by viewModel.estado.collectAsState()
     MaterialTheme {
-        Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
+        // Respeta barras del sistema: sin esto «Salir» queda bajo la barra de estado y no recibe toques.
+        Column(Modifier.fillMaxSize().safeDrawingPadding().padding(24.dp), verticalArrangement = Arrangement.Center) {
             when (val actual = estado) {
                 SesionUiState.Cargando -> CircularProgressIndicator()
                 is SesionUiState.Login -> {
