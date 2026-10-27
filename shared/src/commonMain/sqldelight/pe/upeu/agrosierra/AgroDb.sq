@@ -1,0 +1,60 @@
+CREATE TABLE lote (
+    id INTEGER NOT NULL PRIMARY KEY,
+    codigo TEXT NOT NULL,
+    nombre TEXT NOT NULL,
+    hectareas REAL NOT NULL,
+    cultivo TEXT NOT NULL,
+    valle TEXT NOT NULL,
+    campaniaCerrada INTEGER NOT NULL,
+    dosisMaxima REAL NOT NULL
+);
+
+CREATE TABLE labor (
+    id INTEGER NOT NULL PRIMARY KEY,
+    loteId INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    fecha TEXT NOT NULL,
+    responsable TEXT NOT NULL,
+    cantidad REAL NOT NULL,
+    observacion TEXT NOT NULL,
+    pendiente INTEGER NOT NULL
+);
+
+CREATE TABLE sync_meta (
+    clave TEXT NOT NULL PRIMARY KEY,
+    instanteEpochMs INTEGER NOT NULL
+);
+
+listarTodos:
+SELECT * FROM lote ORDER BY codigo;
+
+filtrarLotes:
+SELECT * FROM lote
+WHERE (:valle IS NULL OR valle = :valle)
+  AND (:estado IS NULL OR campaniaCerrada = :estado)
+  AND (:busqueda = '' OR lower(codigo) LIKE '%' || lower(:busqueda) || '%'
+       OR lower(nombre) LIKE '%' || lower(:busqueda) || '%')
+ORDER BY codigo;
+
+obtenerLote:
+SELECT * FROM lote WHERE id = ?;
+
+insertarLote:
+INSERT OR REPLACE INTO lote
+(id, codigo, nombre, hectareas, cultivo, valle, campaniaCerrada, dosisMaxima)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+borrarLotes:
+DELETE FROM lote;
+
+obtenerUltimaSincronizacion:
+SELECT instanteEpochMs FROM sync_meta WHERE clave = 'lotes';
+
+guardarUltimaSincronizacion:
+INSERT OR REPLACE INTO sync_meta (clave, instanteEpochMs) VALUES ('lotes', ?);
+
+observarLaboresPorLote:
+SELECT * FROM labor WHERE loteId = ? ORDER BY fecha DESC;
+
+siguienteIdLocal:
+SELECT COALESCE(MIN(id), 0) FROM labor;
