@@ -1,0 +1,20 @@
+# Prueba real de cierre de sesión — emulador Pixel_8 — 2026-10-27T16:42:08-05:00 — APK de fix/cerrar-sesion-logacho
+## Antes de Salir: shared_prefs/agro_sesion_cifrada.xml
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="dato"><token cifrado, omitido></string>
+    <string name="iv">I6zs9qS1opSRwxDp</string>
+</map>
+## Pantalla tras pulsar Salir (uiautomator)
+AgroSierra [63,956][407,1051]
+Usuario [105,1114][257,1177]
+Contraseña [105,1282][332,1345]
+Iniciar sesión [126,1424][345,1477]
+## Después de Salir: shared_prefs/agro_sesion_cifrada.xml
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map />
+## Tras cerrar y reabrir la app (no debe restaurar sesión)
+AgroSierra [63,956][407,1051]
+Usuario [105,1114][257,1177]
+Contraseña [105,1282][332,1345]
+Iniciar sesión [126,1424][345,1477]
