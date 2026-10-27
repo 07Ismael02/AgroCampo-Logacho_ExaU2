@@ -54,7 +54,7 @@ La interfaz no ofrece acciones sin privilegio; el backend las rechaza con 403 si
 
 ### Evidencias y cambio sorpresa
 
-Evidencias reales en `evidencias/` (ver `evidencias/README.md`). Cambio sorpresa (SC): **pendiente**, el docente aún no comunicó la letra asignada.
+Evidencias reales en `evidencias/` (ver `evidencias/README.md`). Cambio sorpresa (SC): **no asignado por el docente**; no se implementó ninguna variante.
 
 ## Alcance de la base inicial (fase 1, histórico)
 

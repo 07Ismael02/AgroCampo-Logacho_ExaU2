@@ -2,42 +2,45 @@
 
 Estudiante: Richard Ismael Logacho Rivera.
 
-## Repositorios
+Documento principal: `Evidencias_Examen_U2_AgroSierra_Logacho.pdf`, de 13 páginas. Se genera a partir del `.html` del mismo nombre.
 
-| Repositorio | URL | Versión entregada (`develop`) |
-| --- | --- | --- |
-| AgroCampo (KMP, Android) | https://github.com/07Ismael02/AgroCampo-Logacho_ExaU2 | `dbaf20b05606ff77003a765e894f47d1ba43c49d` |
-| AgroAPI (Spring Boot) | https://github.com/07Ismael02/AgroAPI-Logacho_ExaU2 | `fa6b809eac90288581eb642ac0ce4f50868483b6` |
+## Repositorios y etiquetas
 
-Las funcionalidades llegaron a `develop` mediante PR con merge commit (AgroCampo PR #1 a #5; AgroAPI cinco PR). `main` no recibió funcionalidades directamente.
+| Repositorio | URL | `develop` actual | `v1.0-unidad2` |
+| --- | --- | --- | --- |
+| AgroCampo (KMP, Android) | https://github.com/07Ismael02/AgroCampo-Logacho_ExaU2 | `0a86326` (PR #6) | `dbaf20b` (PR #5) |
+| AgroAPI (Spring Boot) | https://github.com/07Ismael02/AgroAPI-Logacho_ExaU2 | `fa6b809` (PR #5) | `fa6b809` (PR #5) |
+
+La etiqueta de AgroCampo no incluye cambios posteriores a su creación: PR #6, la rama `fix/cerrar-sesion-logacho` ni las ramas de documentación. Todas las PR se fusionaron a `develop` con merge commit; `main` no recibió funcionalidades directamente.
 
 ## Archivos
 
 | Archivo | Contenido |
 | --- | --- |
-| `gradle-pruebas-y-compilacion.log` | Ejecución real de `:shared:testAndroidHostTest` y `:androidApp:assembleDebug` con `--rerun-tasks` sobre `develop` `dbaf20b`. |
-| `resultados-pruebas-agrocampo.txt` | Resumen por clase de los informes JUnit de esa ejecución. |
-| `api-verificacion-real.txt` | Login real de `tecnico1`, `GET /usuarios/me`, `GET /lotes` y 401 sin token contra AgroAPI local (H2, Java 21). El JWT se omitió. |
-| `agroapi-surefire-existente.txt` | Informes Surefire de AgroAPI generados antes de esta sesión (14:47); no se reejecutaron aquí. |
-| `git-grafo-*.txt`, `git-commits-*.txt`, `ramas-*.txt` | Grafo, commits con autor y fecha, y ramas de ambos repositorios. |
+| `capturas/01..07_*.png` | Capturas reales del emulador Pixel_8: login, lotes, labores, modo avión, fila pendiente, reconexión y vista de admin. |
+| `capturas/08..10_*.png` | Prueba real de «Salir» con la corrección de `fix/cerrar-sesion-logacho`. |
+| `capturas/git_grafo_*.png` | Capturas de la salida real de `git log --graph --all --decorate` de ambos repositorios. |
+| `capturas/github_pr_*.png`, `capturas/github_red_*.png` | Capturas de GitHub: lista de PR y «Network graph». GitHub actualiza este último una vez al día. |
+| `prueba-logout.txt` | Registro adb de la prueba de cierre de sesión: almacenamiento cifrado antes y después, pantalla y reapertura. |
+| `http-verificacion.tsv`, `api-coleccion-ejecucion.txt` | Ejecución real de las peticiones de la colección: endpoint, usuario, código esperado, código obtenido y respuesta. |
+| `AgroAPI_Logacho.postman_collection.json` | Colección Postman v2.1: las nueve rutas, un caso 400, un caso 401 y tres casos 403 (16 peticiones). |
+| `gradle-pruebas-y-compilacion.log`, `resultados-pruebas-agrocampo.txt` | Ejecución en esta entrega sobre `develop dbaf20b` con `--rerun-tasks`: 41 pruebas, 0 fallos. |
+| `resultados-pruebas-fix-logout.txt` | Ejecución en esta entrega sobre `fix/cerrar-sesion-logacho`: 41 pruebas, 0 fallos. |
+| `agroapi-surefire-existente.txt` | Informes previos de AgroAPI (14:47, 21 pruebas, 0 fallos). No se reejecutaron en esta entrega. |
+| `api-verificacion-real.txt` | Primera verificación HTTP (login, `/usuarios/me`, `/lotes`, 401). |
+| `git-*.txt`, `ramas-*.txt` | Grafo, commits y ramas en texto, tomados antes de esta revisión. |
 
 ## Pruebas en `commonTest`
 
-`SincronizadorLaboresTest`, `LaboresContratoTest`, `LotesContratoTest` y `AutenticacionTest` están en `commonTest` y usan `MockEngine`. Las que usan base de datos obtienen el controlador SQLite en memoria mediante `expect`/`actual`; el `actual` (JDBC) está en `androidHostTest`, por lo que se ejecutan con `:shared:testAndroidHostTest`. El módulo solo declara destino Android: no se ha validado iOS.
+`SincronizadorLaboresTest`, `LaboresContratoTest`, `LotesContratoTest` y `AutenticacionTest` están en `commonTest` y usan `MockEngine`. Las que usan base de datos obtienen el controlador SQLite en memoria mediante `expect`/`actual`. El `actual` (JDBC) está en `androidHostTest`, por eso se ejecutan con `:shared:testAndroidHostTest`. El módulo solo declara destino Android: no se ha validado iOS.
 
-## Limitaciones reales
+## Limitaciones verificadas
 
-- Pruebas manuales en emulador Pixel_8 con capturas reales en `capturas/`. No hay captura de un 403 dentro de la app (la interfaz oculta la acción); el 403 se evidencia por HTTP. El botón «Salir» no cerró la sesión al pulsarlo por adb; pendiente de revisión.
+- No hay captura de un 403 dentro de la app. La interfaz oculta las acciones sin privilegio. La única vía legítima es la regla de 24 h de edición, y hoy no es reproducible sin alterar datos o el reloj. El 403 se evidencia por HTTP.
+- La corrección de «Salir» (la barra de estado tapaba el botón) está en `fix/cerrar-sesion-logacho`, pendiente de PR.
+- La variante 200 de `POST /lotes/{id}/cerrar-campania` no se ejecutó, para no alterar la semilla.
 - AgroAPI no ofrece idempotencia: un POST sin respuesta queda como envío incierto y requiere revisión manual (ver README principal).
-- No se implementó ningún cambio sorpresa (SC-A/B/C/D); no fue asignado.
 
-## Entregables adicionales
+## Cambio sorpresa
 
-| Archivo | Contenido |
-| --- | --- |
-| `Evidencias_Examen_U2_AgroSierra_Logacho.pdf` | Documento formal de evidencias (fuente: el `.html` del mismo nombre). |
-| `capturas/01..07_*.png` | Capturas reales del emulador: login, lotes, labores, modo avión, pendiente, reconexión y vista de admin. |
-| `AgroAPI_Logacho.postman_collection.json` | Colección Postman v2.1 con las nueve rutas y ejemplos 400, 401 y 403. |
-| `api-coleccion-ejecucion.txt` | Ejecución real de esas peticiones con curl. |
-
-Cambio sorpresa (SC): pendiente; el docente aún no comunicó la letra.
+No asignado por el docente. No se implementó ninguna variante SC-A/B/C/D.

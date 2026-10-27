@@ -1,209 +1,177 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><title>Evidencias Examen U2 AgroSierra - Logacho</title>
 <style>
-@page{size:A4;margin:16mm 14mm}
-body{font-family:"Segoe UI",Arial,sans-serif;font-size:10.5pt;color:#1a1a1a;line-height:1.4}
-h1{font-size:22pt;margin:0 0 6px}h2{font-size:14pt;border-bottom:2px solid #5b4a9c;padding-bottom:3px;margin-top:22px;page-break-after:avoid}
-.portada{height:250mm;display:flex;flex-direction:column;justify-content:center;text-align:center}
+@page{size:A4;margin:15mm 13mm}
+*{box-sizing:border-box}
+body{font-family:"Segoe UI",Arial,sans-serif;font-size:10pt;color:#1a1a1a;line-height:1.4;margin:0}
+h1{font-size:22pt;margin:0 0 6px}
+h2{font-size:13.5pt;border-bottom:2px solid #5b4a9c;padding-bottom:3px;margin:18px 0 8px;break-after:avoid}
+h3{font-size:11pt;margin:12px 0 4px;break-after:avoid}
+p{margin:5px 0}
+.portada{height:262mm;display:flex;flex-direction:column;justify-content:center;text-align:center}
 .portada p{font-size:12.5pt;margin:4px}
-table{border-collapse:collapse;width:100%;margin:6px 0}td,th{border:1px solid #bbb;padding:4px 6px;text-align:left;vertical-align:top}th{background:#eee}
-pre{font-family:Consolas,monospace;font-size:7.6pt;background:#f6f6f6;border:1px solid #ddd;padding:6px;white-space:pre-wrap;word-break:break-all}
-.grid{display:flex;flex-wrap:wrap;gap:10px}figure{margin:0;width:31%;page-break-inside:avoid;text-align:center}
-figure img{width:100%;border:1px solid #999}figcaption{font-size:8.5pt;color:#444;margin-top:3px}
-.nota{background:#fff6e0;border-left:4px solid #e0a800;padding:6px 10px}
-.salto{page-break-before:always}
+table{border-collapse:collapse;width:100%;margin:6px 0;table-layout:fixed}
+td,th{border:1px solid #bbb;padding:3px 5px;text-align:left;vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+th{background:#eee}
+tr{break-inside:avoid}
+.http td{font-size:8.3pt}.http .ep,.http .fr{font-family:Consolas,monospace;font-size:7.8pt}
+td.ok{background:#e6f4ea;font-weight:600}td.bad{background:#fde7e9;font-weight:600}
+code,.mono{font-family:Consolas,monospace;font-size:8.6pt}
+pre{font-family:Consolas,monospace;font-size:8pt;background:#f6f6f6;border:1px solid #ddd;padding:6px;white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0}
+.grid{display:flex;flex-wrap:wrap;gap:8px 2%;justify-content:flex-start}
+figure{margin:0;width:32%;break-inside:avoid;text-align:center}
+figure img{width:100%;border:1px solid #999;display:block}
+figure.wide{width:100%;margin:6px 0}
+figcaption{font-size:8.3pt;color:#333;margin-top:3px;text-align:left}
+.nota{background:#fff6e0;border-left:4px solid #e0a800;padding:6px 10px;margin:6px 0}
+.salto{break-before:page}
+ul{margin:4px 0 4px 18px;padding:0}li{margin:2px 0}
 </style></head><body>
+
 <section class="portada">
 <p style="font-size:11pt;color:#555">Universidad Peruana Unión · Desarrollo de Aplicaciones Móviles</p>
 <h1>Evidencias del Examen Parcial II — Práctica</h1>
 <p>Unidad 2 · Versión A · Caso <b>AgroSierra</b></p>
-<p style="margin-top:30px">Estudiante: <b>Richard Ismael Logacho Rivera</b></p>
-<p>Fecha de las evidencias: 27 de octubre de 2026</p>
-<p style="margin-top:30px;font-size:10pt;color:#555">AgroCampo (Kotlin Multiplatform / Android) · AgroAPI (Kotlin, Spring Boot, Java 21, H2)</p>
+<p style="margin-top:28px">Estudiante: <b>Richard Ismael Logacho Rivera</b></p>
+<p>Evidencias obtenidas el 27 de octubre de 2026</p>
+<p style="margin-top:28px;font-size:10pt;color:#555">AgroCampo (Kotlin Multiplatform / Android) · AgroAPI (Kotlin, Spring Boot, Java 21, H2)</p>
 </section>
 
-<h2 class="salto">1. Datos de la entrega</h2>
+<h2 class="salto">1. Repositorios, ramas, pull requests y etiquetas</h2>
 <table>
-<tr><th>Repositorio</th><th>Enlace</th><th>Etiqueta v1.0-unidad2</th></tr>
-<tr><td>AgroCampo</td><td>https://github.com/07Ismael02/AgroCampo-Logacho_ExaU2</td><td>develop <code>dbaf20b</code></td></tr>
-<tr><td>AgroAPI</td><td>https://github.com/07Ismael02/AgroAPI-Logacho_ExaU2</td><td>develop <code>fa6b809</code></td></tr>
+<tr><th style="width:17%">Repositorio</th><th style="width:43%">Enlace</th><th>develop actual</th></tr>
+<tr><td>AgroCampo</td><td class=mono>https://github.com/07Ismael02/AgroCampo-Logacho_ExaU2</td><td><code>0a86326</code> (merge PR #6)</td></tr>
+<tr><td>AgroAPI</td><td class=mono>https://github.com/07Ismael02/AgroAPI-Logacho_ExaU2</td><td><code>fa6b809</code> (merge PR #5)</td></tr>
 </table>
-<p>Funcionalidades integradas en <code>develop</code> mediante pull requests con merge commit (AgroCampo PR #1–#5, AgroAPI PR #1–#5). Las evidencias y la documentación final están en la rama <code>docs/entrega-final-logacho</code> de cada repositorio.</p>
-<p>Entorno de prueba: emulador Android <b>Pixel_8</b> (Android Studio SDK), APK <code>androidApp-debug.apk</code> compilado desde <code>develop dbaf20b</code>, AgroAPI local en <code>http://localhost:8080</code>, accedido desde el emulador como <code>http://10.0.2.2:8080</code>.</p>
+<h3>Etiquetas <code>v1.0-unidad2</code></h3>
+<table>
+<tr><th style="width:17%">Repositorio</th><th style="width:20%">Apunta a</th><th>Alcance</th></tr>
+<tr><td>AgroCampo</td><td><code>dbaf20b</code> (merge PR #5)</td><td>Incluye PR #1 a #5. <b>No incluye</b> cambios posteriores: PR #6 (evidencias, <code>0a86326</code>), la corrección de «Salir» (<code>fix/cerrar-sesion-logacho</code>, <code>62bd727</code>) ni las ramas de documentación.</td></tr>
+<tr><td>AgroAPI</td><td><code>fa6b809</code> (merge PR #5)</td><td>Igual al develop actual. <b>No incluye</b> la rama <code>docs/entrega-final-logacho</code> (README y colección).</td></tr>
+</table>
+<h3>Pull requests (todas fusionadas con merge commit)</h3>
+<table>
+<tr><th style="width:17%">Repositorio</th><th>PR</th></tr>
+<tr><td>AgroCampo</td><td>#1 Estructura KMP · #2 Autenticación Ktor y sesión segura · #3 Lotes local-first con SQLDelight · #4 Labores y persistencia por cuenta · #5 Sincronización offline-first · #6 Evidencias de entrega</td></tr>
+<tr><td>AgroAPI</td><td>#1 Persistencia y semilla · #2 RN-01 a RN-04 · #3 Inicio de sesión y filtro JWT · #4 Contrato REST · #5 Deserialización y errores JSON por campo</td></tr>
+</table>
+<h3>Ramas publicadas pendientes de PR</h3>
+<table>
+<tr><th style="width:17%">Repositorio</th><th style="width:38%">Rama</th><th>Contenido</th></tr>
+<tr><td>AgroCampo</td><td class=mono>fix/cerrar-sesion-logacho</td><td>Corrección del botón «Salir» (sección 3).</td></tr>
+<tr><td>AgroCampo</td><td class=mono>docs/evidencias-corregidas-logacho</td><td>Este documento, capturas y colección actualizadas.</td></tr>
+<tr><td>AgroAPI</td><td class=mono>docs/entrega-final-logacho</td><td>README completo, colección Postman y su ejecución.</td></tr>
+</table>
+<p>Entorno de prueba: emulador Android <b>Pixel_8</b>; AgroAPI local (<code>develop fa6b809</code>, H2, Java 21) en <code>http://localhost:8080</code>, accedido desde el emulador como <code>http://10.0.2.2:8080</code>.</p>
 
-<h2>2. Capturas reales del emulador</h2>
+<h2 class="salto">2. Funcionamiento en el emulador (capturas reales)</h2>
+<p>Capturas 1 a 7 con el APK de <code>develop</code>; la captura 1 se tomó con el APK de <code>fix/cerrar-sesion-logacho</code>, cuya única diferencia es el margen de las barras del sistema.</p>
 <div class="grid">
-<figure><img src="capturas/01_login.png"><figcaption>1. Login con tecnico1 (credenciales cargadas)</figcaption></figure>
-<figure><img src="capturas/02_lotes_tecnico1.png"><figcaption>2. Lotes leídos de SQLDelight tras sincronizar: 8 lotes, 20 labores</figcaption></figure>
-<figure><img src="capturas/03_labores_lote.png"><figcaption>3. Detalle del lote ALT-001 y sus labores</figcaption></figure>
-<figure><img src="capturas/04_offline_pendiente.png"><figcaption>4. Modo avión activo: labor guardada, «Pendientes de esta cuenta: 1»</figcaption></figure>
-<figure><img src="capturas/05_offline_fila_pendiente.png"><figcaption>5. Fila creada sin red marcada «Pendiente de envío»</figcaption></figure>
-<figure><img src="capturas/06_reconexion_sincronizada.png"><figcaption>6. Al recuperar la red: «1 enviados, 21 recibidos», pendientes 0</figcaption></figure>
-<figure><img src="capturas/07_admin_sin_privilegio.png"><figcaption>7. admin (sin LABOR_CREAR/EDITAR/ELIMINAR): la interfaz no ofrece esas acciones</figcaption></figure>
+<figure><img src="capturas/01_login.png"><figcaption>1. Login de tecnico1 con credenciales ingresadas, sin errores, antes de pulsar «Iniciar sesión».</figcaption></figure>
+<figure><img src="capturas/02_lotes_tecnico1.png"><figcaption>2. Lotes leídos de SQLDelight tras sincronizar: 8 lotes y 20 labores.</figcaption></figure>
+<figure><img src="capturas/03_labores_lote.png"><figcaption>3. Detalle del lote ALT-001 y sus labores.</figcaption></figure>
+<figure><img src="capturas/04_offline_pendiente.png"><figcaption>4. Modo avión: labor guardada; «Pendientes de esta cuenta: 1».</figcaption></figure>
+<figure><img src="capturas/05_offline_fila_pendiente.png"><figcaption>5. La fila creada sin red queda marcada «Pendiente de envío».</figcaption></figure>
+<figure><img src="capturas/06_reconexion_sincronizada.png"><figcaption>6. Al recuperar la red: «1 enviados, 21 recibidos», pendientes 0.</figcaption></figure>
 </div>
-<p>Tras la captura 6 se consultó AgroAPI y la labor «Riego en modo avion» existe una sola vez con ID de servidor <b>1000</b> (el ID local provisional era negativo).</p>
+<p>Tras la captura 6, AgroAPI devolvió la labor «Riego en modo avion» una sola vez, con ID de servidor <b>1000</b> (fila 5 de la tabla HTTP); su ID local provisional era negativo.</p>
 
-<h2 class="salto">3. Operación rechazada por falta de privilegio (HTTP 403)</h2>
-<div class="nota">La aplicación oculta las acciones para las que el usuario no tiene privilegio (captura 7), por lo que desde la interfaz no se puede provocar un 403. El rechazo del backend se evidencia con peticiones HTTP reales con el JWT de <code>tecnico1</code> (no tiene LABOR_ELIMINAR ni CAMPANIA_CERRAR). No se dispone de una captura de pantalla de un 403 en la app.</div>
+<h2 class="salto">3. Cierre de sesión («Salir»)</h2>
+<p><b>Causa:</b> la aplicación dibuja de borde a borde y el botón «Salir» quedaba parcialmente bajo la barra de estado (0–132 px), que absorbía los toques. La lógica de cierre ya era correcta. <b>Corrección</b> (<code>62bd727</code>, rama <code>fix/cerrar-sesion-logacho</code>): <code>safeDrawingPadding()</code> en la raíz de <code>AgroApp</code>. Pruebas tras la corrección: 41/41 y <code>assembleDebug</code> exitoso.</p>
+<div class="grid">
+<figure><img src="capturas/08_sesion_iniciada.png"><figcaption>8. Sesión de tecnico1 con «Salir» debajo de la barra de estado.</figcaption></figure>
+<figure><img src="capturas/09_tras_salir.png"><figcaption>9. Tras pulsar «Salir»: pantalla de login.</figcaption></figure>
+<figure><img src="capturas/10_reapertura_sin_sesion.png"><figcaption>10. Tras cerrar y reabrir la app: no se restaura la sesión.</figcaption></figure>
+</div>
+<p>El archivo de preferencias cifrado pasa de contener el token (valor omitido) a <code>&lt;map /&gt;</code>: el token se borra del almacenamiento seguro.</p>
+<h3>Registro de la prueba (adb, emulador Pixel_8; extracto de <code>prueba-logout.txt</code>)</h3>
 <pre>
-### ERROR 403 tecnico1 DELETE /labores/1
-{"timestamp":"2026-10-27T21:29:12.867862100","status":403,"error":"Forbidden","message":"Privilegio insuficiente","path":"/api/v1/labores/1","validationErrors":null}
-=&gt; HTTP 403
-
-### ERROR 403 tecnico1 POST /lotes/1/cerrar-campania
-{"timestamp":"2026-10-27T21:29:12.942876","status":403,"error":"Forbidden","message":"Privilegio insuficiente","path":"/api/v1/lotes/1/cerrar-campania","validationErrors":null}
-=&gt; HTTP 403
+# Prueba real de cierre de sesión — emulador Pixel_8 — 2026-10-27T16:42:08-05:00 — APK de fix/cerrar-sesion-logacho
+## Antes de Salir: shared_prefs/agro_sesion_cifrada.xml
+    &lt;string name="dato"&gt;&lt;token cifrado, omitido&gt;&lt;/string&gt;
+    &lt;string name="iv"&gt;I6zs9qS1opSRwxDp&lt;/string&gt;
+## Pantalla tras pulsar Salir (uiautomator)
+AgroSierra
+Iniciar sesión
+## Después de Salir: shared_prefs/agro_sesion_cifrada.xml
+&lt;map /&gt;
+## Tras cerrar y reabrir la app (no debe restaurar sesión)
+AgroSierra
+Iniciar sesión
 </pre>
 
-<h2>4. Verificación HTTP del backend</h2>
-<p>Ejecución real de la colección <code>AgroAPI_Logacho.postman_collection.json</code> (9 rutas, más 400, 401 y 403) con curl contra AgroAPI develop <code>fa6b809</code>. Los JWT se omiten.</p>
-<pre>
-# Ejecución real de la colección AgroAPI_Logacho.postman_collection.json con curl — 2026-10-27T16:29:11-05:00 — AgroAPI develop fa6b809 (JWT omitidos)
+<h2 class="salto">4. Privilegios y rechazo 403</h2>
+<div class="grid">
+<figure><img src="capturas/07_admin_sin_privilegio.png"><figcaption>7. admin (LOTE_LEER, LABOR_LEER, USUARIO_GESTIONAR): no se ofrecen «Registrar labor», «Editar» ni «Eliminar».</figcaption></figure>
+<div style="width:64%">
+<h3>¿Puede mostrarse un 403 en la interfaz?</h3>
+<p>La interfaz oculta las acciones sin privilegio, como exige el examen, por lo que no se puede provocar un 403 por privilegio desde la app sin añadir botones artificiales.</p>
+<p>La única vía legítima es la regla de 24 horas: AgroAPI responde <b>403 «No puede editar esta labor»</b> cuando un técnico edita su labor después de 24 h, y la app ofrece «Editar» porque esa regla solo la verifica el servidor. Hoy no es reproducible sin alterar datos o el reloj: las labores de tecnico1 con más de 24 h (IDs 10 y 20) están en lotes con campaña cerrada, donde la app no ofrece «Editar», y el resto tienen menos de 24 h. No se modificaron permisos, datos ni el reloj para producir una captura.</p>
+<p>El rechazo del backend se demuestra con las peticiones reales E3, E4 y 9 de la sección 5: tecnico1 sin LABOR_ELIMINAR, admin sin LABOR_CREAR y tecnico1 sin CAMPANIA_CERRAR.</p>
+</div>
+</div>
 
-### 1 POST /auth/login tecnico1
-{"token":"&lt;JWT&gt;","usuario":"tecnico1","rol":"TECNICO","privilegios":["LOTE_LEER","LABOR_LEER","LABOR_CREAR","LABOR_EDITAR"]}
-=&gt; HTTP 200
+<h2 class="salto">5. Verificación HTTP del backend</h2>
+<p>Peticiones reales con curl contra AgroAPI <code>develop fa6b809</code> (27/10/2026), equivalentes a la colección Postman. Respuestas completas en <code>evidencias/api-coleccion-ejecucion.txt</code>; los JWT se omiten.</p>
+<table class="http">
+<tr><th style="width:5%">#</th><th style="width:27%">Endpoint</th><th style="width:10%">Usuario</th><th style="width:8%">Esperado</th><th style="width:8%">Obtenido</th><th>Fragmento relevante de la respuesta</th></tr>
+<tr><td>1</td><td class=ep>POST /api/v1/auth/login</td><td>tecnico1</td><td>200</td><td class=ok>200</td><td class=fr>token emitido, "rol":"TECNICO"</td></tr>
+<tr><td>2</td><td class=ep>GET /api/v1/usuarios/me</td><td>tecnico1</td><td>200</td><td class=ok>200</td><td class=fr>"id":1, "rol":"TECNICO"</td></tr>
+<tr><td>3</td><td class=ep>GET /api/v1/lotes<wbr>?pagina=0<wbr>&amp;tamanio=10<wbr>&amp;valle=Valle%20Alto</td><td>tecnico1</td><td>200</td><td class=ok>200</td><td class=fr>"totalElementos":3, "totalPaginas":1, primer elemento "codigo":"ALT-001"</td></tr>
+<tr><td>4</td><td class=ep>GET /api/v1/lotes/1</td><td>tecnico1</td><td>200</td><td class=ok>200</td><td class=fr>"id":1, "codigo":"ALT-001", "nombre":"Lote Mirador"</td></tr>
+<tr><td>5</td><td class=ep>GET /api/v1/lotes/1/labores<wbr>?pagina=0<wbr>&amp;tamanio=2</td><td>tecnico1</td><td>200</td><td class=ok>200</td><td class=fr>"totalElementos":4, "totalPaginas":2, primer elemento "observacion":"Riego en modo avion"</td></tr>
+<tr><td>6</td><td class=ep>POST /api/v1/labores</td><td>tecnico1</td><td>201</td><td class=ok>201</td><td class=fr>"id":1002, "cantidad":1.0, "observacion":"Creada desde la coleccion"</td></tr>
+<tr><td>7</td><td class=ep>PUT /api/v1/labores/1002</td><td>tecnico1</td><td>200</td><td class=ok>200</td><td class=fr>"id":1002, "cantidad":1.5, "observacion":"Corregida desde la coleccion"</td></tr>
+<tr><td>8</td><td class=ep>DELETE /api/v1/labores/1002</td><td>jefe1</td><td>204</td><td class=ok>204</td><td class=fr>(sin cuerpo, 204 No Content)</td></tr>
+<tr><td>9</td><td class=ep>POST /api/v1/lotes/1/cerrar-campania</td><td>tecnico1</td><td>403</td><td class=ok>403</td><td class=fr>"message":"Privilegio insuficiente"</td></tr>
+<tr><td>E1</td><td class=ep>POST /api/v1/labores</td><td>tecnico1</td><td>400</td><td class=ok>400</td><td class=fr>"message":"Datos inválidos", "validationErrors":{"cantidad":"debe ser mayor que 0"}</td></tr>
+<tr><td>E2</td><td class=ep>GET /api/v1/usuarios/me</td><td>(sin token)</td><td>401</td><td class=ok>401</td><td class=fr>"message":"Debe iniciar sesión"</td></tr>
+<tr><td>E3</td><td class=ep>DELETE /api/v1/labores/1</td><td>tecnico1</td><td>403</td><td class=ok>403</td><td class=fr>"message":"Privilegio insuficiente"</td></tr>
+<tr><td>E4</td><td class=ep>POST /api/v1/labores</td><td>admin</td><td>403</td><td class=ok>403</td><td class=fr>"message":"Privilegio insuficiente"</td></tr>
+</table>
+<p>La ruta 9 se ejecutó solo en su variante 403. La variante 200 (jefe1) está en la colección, pero no se ejecutó para no cerrar la campaña de un lote de la semilla.</p>
 
-### 2 GET /usuarios/me
-{"id":1,"usuario":"tecnico1","rol":"TECNICO","privilegios":["LOTE_LEER","LABOR_LEER","LABOR_CREAR","LABOR_EDITAR"]}
-=&gt; HTTP 200
+<h3>Colección Postman</h3>
+<p><code>evidencias/AgroAPI_Logacho.postman_collection.json</code> (Postman v2.1), publicada en GitHub en AgroCampo (rama <code>docs/evidencias-corregidas-logacho</code>) y en AgroAPI (rama <code>docs/entrega-final-logacho</code>, carpeta <code>docs/</code>). Contiene 16 peticiones: las nueve rutas (login, <code>/usuarios/me</code>, <code>/lotes</code>, <code>/lotes/{id}</code>, <code>/lotes/{id}/labores</code>, <code>POST</code>/<code>PUT</code>/<code>DELETE /labores</code> y <code>/lotes/{id}/cerrar-campania</code>), un caso 400, un caso 401 y tres casos 403.</p>
 
-### 3 GET /lotes?pagina=0&amp;tamanio=10&amp;valle=Valle Alto
-{"contenido":[{"id":1,"codigo":"ALT-001","nombre":"Lote Mirador","hectareas":2.5,"cultivo":"Papa","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":2.0},{"id":2,"codigo":"ALT-002","nombre":"Lote Quebrada","hectareas":3.0,"cultivo":"Maiz","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":1.5},{"id":3,"codigo":"ALT-003","nombre":"Lote Pampa","hectareas":1.8,"cultivo":"Quinua","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":1.2}],"pagina
-=&gt; HTTP 200
+<h2 class="salto">6. Resultados de pruebas</h2>
+<h3>Ejecutadas en esta entrega — AgroCampo (incluye <code>commonTest</code>)</h3>
+<p><code>.\gradlew.bat :shared:testAndroidHostTest :androidApp:assembleDebug</code></p>
+<table>
+<tr><th>Ejecución</th><th>Resultado</th></tr>
+<tr><td><code>develop dbaf20b</code> con <code>--rerun-tasks</code> (16:16)</td><td>41 pruebas, 0 fallos, 0 errores · BUILD SUCCESSFUL · APK generado</td></tr>
+<tr><td><code>fix/cerrar-sesion-logacho</code> (16:38)</td><td>41 pruebas, 0 fallos, 0 errores · BUILD SUCCESSFUL</td></tr>
+</table>
+<table>
+<tr><th>Clase</th><th style="width:12%">Pruebas</th><th style="width:12%">Fallos</th><th style="width:12%">Errores</th></tr>
+<tr><td>AutenticacionTest</td><td>4</td><td>0</td><td>0</td></tr>
+<tr><td>LaborPersistenciaTest</td><td>5</td><td>0</td><td>0</td></tr>
+<tr><td>LaborReglasTest</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>LaboresContratoTest</td><td>3</td><td>0</td><td>0</td></tr>
+<tr><td>LotesContratoTest</td><td>4</td><td>0</td><td>0</td></tr>
+<tr><td>LotesLocalFirstTest</td><td>6</td><td>0</td><td>0</td></tr>
+<tr><td>SincronizadorLaboresTest</td><td>17</td><td>0</td><td>0</td></tr>
+</table>
+<p><code>AutenticacionTest</code>, <code>LaboresContratoTest</code>, <code>LotesContratoTest</code> y <code>SincronizadorLaboresTest</code> están en <code>commonTest</code>. Usan el motor HTTP simulado (MockEngine) y SQLite en memoria. El controlador JDBC se provee con <code>expect/actual</code> desde <code>androidHostTest</code>, por eso se ejecutan con esa tarea. Cubren la conversión de DTO, la traducción de errores, el registro sin conexión y el orden de sincronización. No se ha validado iOS.</p>
+<h3>Informes previos — AgroAPI (no reejecutados en esta entrega)</h3>
+<p>Informes Surefire generados el 27/10/2026 a las 14:47, antes de estas evidencias: ApiRestTest 3, PersistenciaSemillaTest 3, ReglasNegocioTest 4, SeguridadJwtTest 3, ValidacionJsonTest 8 · <b>21 pruebas, 0 fallos, 0 errores</b>.</p>
 
-### 4 GET /lotes/1
-{"id":1,"codigo":"ALT-001","nombre":"Lote Mirador","hectareas":2.5,"cultivo":"Papa","valle":"Valle Alto","campaniaCerrada":false,"dosisMaximaPorHectarea":2.0}
-=&gt; HTTP 200
+<h2 class="salto">7. Gráfico de ramas — AgroCampo</h2>
+<figure class=wide><img src="capturas/git_grafo_AgroCampo-Logacho.png"><figcaption>Captura de la salida real de <code>git log --graph --all --decorate</code> del repositorio local, actualizado con <code>git fetch</code>. Muestra las ramas remotas, los merges de PR #1 a #6 y la etiqueta.</figcaption></figure>
+<figure class=wide><img src="capturas/github_pr_AgroCampo-Logacho_ExaU2.png"><figcaption>Captura de la lista de pull requests en GitHub (6 cerradas y fusionadas).</figcaption></figure>
+<h2 class="salto">8. Gráfico de ramas — AgroAPI</h2>
+<figure class=wide><img src="capturas/git_grafo_AgroAPI-Logacho.png"><figcaption>Captura de la salida real de <code>git log --graph --all --decorate</code> de AgroAPI, actualizado con <code>git fetch</code>.</figcaption></figure>
+<figure class=wide><img src="capturas/github_pr_AgroAPI-Logacho_ExaU2.png"><figcaption>Captura de la lista de pull requests en GitHub (5 cerradas y fusionadas).</figcaption></figure>
+<p>El «Network graph» de GitHub también se capturó (<code>capturas/github_red_*.png</code>). No se usa como gráfico principal porque GitHub lo actualiza una vez al día y recorta los commits más recientes.</p>
 
-### 5 GET /lotes/1/labores?pagina=0&amp;tamanio=3
-{"contenido":[{"id":1000,"loteId":1,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.5,"observacion":"Riego en modo avion","pendiente":false},{"id":1,"loteId":1,"tipo":"COSECHA","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.0,"observacion":"Cosecha del sector norte","pendiente":false},{"id":2,"loteId":1,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.0,"observacion":"Riego de mantenimiento","pendiente":false}],"pagina":0,"tamanio":3
-=&gt; HTTP 200
-
-### 6 POST /labores
-{"id":1001,"loteId":2,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.0,"observacion":"Creada desde la coleccion","pendiente":false}
-=&gt; HTTP 201
-
-### 7 PUT /labores/1001
-{"id":1001,"loteId":2,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"tecnico1","cantidad":1.5,"observacion":"Corregida desde la coleccion","pendiente":false}
-=&gt; HTTP 200
-
-### 8 DELETE /labores/1001 (jefe1)
-
-=&gt; HTTP 204
-
-### 9 POST /lotes/{id}/cerrar-campania — la variante 200 (jefe1) NO se ejecutó para no cerrar un lote de la semilla; ver 403 abajo
-
-### ERROR 400 validación (cantidad negativa)
-{"timestamp":"2026-10-27T21:29:12.707208500","status":400,"error":"Bad Request","message":"Datos inválidos","path":"/api/v1/labores","validationErrors":{"cantidad":"debe ser mayor que 0"}}
-=&gt; HTTP 400
-
-### ERROR 401 sin token GET /usuarios/me
-{"timestamp":"2026-10-27T21:29:12.786122700","status":401,"error":"Unauthorized","message":"Debe iniciar sesión","path":"/api/v1/usuarios/me","validationErrors":null}
-=&gt; HTTP 401
-
-### ERROR 403 tecnico1 DELETE /labores/1
-{"timestamp":"2026-10-27T21:29:12.867862100","status":403,"error":"Forbidden","message":"Privilegio insuficiente","path":"/api/v1/labores/1","validationErrors":null}
-=&gt; HTTP 403
-
-### ERROR 403 tecnico1 POST /lotes/1/cerrar-campania
-{"timestamp":"2026-10-27T21:29:12.942876","status":403,"error":"Forbidden","message":"Privilegio insuficiente","path":"/api/v1/lotes/1/cerrar-campania","validationErrors":null}
-=&gt; HTTP 403
-</pre>
-
-<h2 class="salto">5. Resultados reales de las pruebas (commonTest)</h2>
-<p><code>.\gradlew.bat :shared:testAndroidHostTest :androidApp:assembleDebug --rerun-tasks</code> sobre <code>develop dbaf20b</code>: <b>BUILD SUCCESSFUL</b>. Las clases de <code>commonTest</code> (AutenticacionTest, LaboresContratoTest, LotesContratoTest, SincronizadorLaboresTest) usan MockEngine y SQLite en memoria; el controlador JDBC se provee por <code>expect/actual</code> desde <code>androidHostTest</code>. No se validó iOS.</p>
-<pre>
-# Resultados JUnit — :shared:testAndroidHostTest, develop dbaf20b, 2026-10-27T16:16:06-05:00
-testsuite name="pe.upeu.agrosierra.AutenticacionTest" tests="4" skipped="0" failures="0" errors="0"
-testsuite name="pe.upeu.agrosierra.LaborPersistenciaTest" tests="5" skipped="0" failures="0" errors="0"
-testsuite name="pe.upeu.agrosierra.LaborReglasTest" tests="2" skipped="0" failures="0" errors="0"
-testsuite name="pe.upeu.agrosierra.LaboresContratoTest" tests="3" skipped="0" failures="0" errors="0"
-testsuite name="pe.upeu.agrosierra.LotesContratoTest" tests="4" skipped="0" failures="0" errors="0"
-testsuite name="pe.upeu.agrosierra.LotesLocalFirstTest" tests="6" skipped="0" failures="0" errors="0"
-testsuite name="pe.upeu.agrosierra.SincronizadorLaboresTest" tests="17" skipped="0" failures="0" errors="0"
-TOTAL tests=41 failures=0 errors=0
-assembleDebug: 16494699 bytes androidApp/build/outputs/apk/debug/androidApp-debug.apk
-</pre>
-<p>AgroAPI: informes Surefire existentes (generados el 27/10/2026 a las 14:47, no reejecutados para esta evidencia): 21 pruebas, 0 fallos, 0 errores.</p>
-
-<h2 class="salto">6. Gráfico de ramas — AgroCampo</h2>
-<pre>
-* e3597ec (HEAD -&gt; docs/entrega-final-logacho, origin/docs/entrega-final-logacho) docs: agregar evidencias reales de entrega de la unidad 2
-*   dbaf20b (tag: v1.0-unidad2, origin/develop, develop) Merge pull request #5 from 07Ismael02/feature/sincronizacion-offline-logacho
-|\  
-| * 82f8ce3 (origin/feature/sincronizacion-offline-logacho, feature/sincronizacion-offline-logacho) docs: documentar orden de sincronizacion y revision de envios inciertos
-| * 8c211f4 test(offline): cubrir registro sin red, errores, paginacion, reconexion y reinicio
-| * d5b4fcb feat(sincronizacion): mostrar rechazos y revisar envios inciertos
-| * 85637a2 fix(sincronizacion): distinguir rechazos del servidor de envios inciertos
-| * 728c886 test(sincronizacion): verificar orden, conciliacion y envios inciertos
-| * 8c384e5 feat(sincronizacion): sincronizar manualmente y al recuperar conexion
-| * 4a733c5 feat(sincronizacion): subir pendientes antes de descargar labores
-|/  
-*   f4eb104 Merge pull request #4 from feature/labores-offline-logacho
-|\  
-| * 8d60f21 (origin/feature/labores-offline-logacho, feature/labores-offline-logacho) feat: presentar labores y acciones segun privilegios
-| * 4a87277 feat: integrar API de labores y reglas de privilegios
-| * 3fc2461 feat: aislar y persistir labores agricolas por cuenta
-|/  
-*   e8979db Integrar consulta local-first de lotes en develop
-|\  
-| * 795b770 (origin/feature/lotes-sqldelight-logacho, feature/lotes-sqldelight-logacho) feat(lotes): mostrar catalogo local y detalle en Android
-| * dbf401f feat(lotes): descargar paginas y conservar cache local
-| * 2dacf4e feat(lotes): definir modelo y esquema SQLDelight
-|/  
-*   20e5f7b Integrar autenticación Ktor y sesión segura en develop
-|\  
-| * 2a77289 (origin/feature/autenticacion-ktor-logacho, feature/autenticacion-ktor-logacho) feat(auth): integrar login y token cifrado en Android
-| * 305b5c0 feat(auth): definir contratos y cliente Ktor para sesion
-|/  
-*   b7e0efe Integrar estructura KMP de AgroCampo en develop
-|\  
-| * 37d025d (origin/feature/estructura-kmp-logacho, feature/estructura-kmp-logacho) chore: configurar Ktor Koin y SQLDelight en shared
-|/  
-* cec3429 (origin/main, origin/HEAD, main) chore: iniciar AgroCampo KMP con Compose y Gradle Wrapper
-</pre>
-<h2>7. Gráfico de ramas — AgroAPI</h2>
-<pre>
-* b03d8ba (HEAD -&gt; docs/entrega-final-logacho, origin/docs/entrega-final-logacho) docs: completar README y agregar coleccion API de entrega
-*   fa6b809 (tag: v1.0-unidad2, origin/develop, develop) Merge pull request #5 from 07Ismael02/fix/validacion-json-logacho
-|\  
-| * bfeb2dd (origin/fix/validacion-json-logacho, fix/validacion-json-logacho) test(json): verificar omisiones y valores invalidos en labores
-| * 49541d0 fix(json): deserializar valores Kotlin y ubicar errores por campo
-|/  
-*   9a483f4 Merge pull request #4 from 07Ismael02/feature/api-rest-logacho
-|\  
-| * 480a4f3 (origin/feature/api-rest-logacho, feature/api-rest-logacho) docs(api): describir contrato y privilegios AgroSierra
-| * 743cdb1 test(api): comprobar paginacion roles y operaciones REST
-| * 0ee5a59 feat(api): exponer lotes y labores con permisos y errores
-|/  
-*   cf33237 Merge pull request #3 from 07Ismael02/feature/seguridad-jwt-logacho
-|\  
-| * 7a7f31c (origin/feature/seguridad-jwt-logacho, feature/seguridad-jwt-logacho) test(seguridad): verificar login y expiracion del token
-| * 41adc6c feat(seguridad): firmar JWT y proteger rutas del servicio
-|/  
-*   c0fe106 Merge pull request #2 from 07Ismael02/feature/reglas-negocio-logacho
-|\  
-| * 70a2996 (origin/feature/reglas-negocio-logacho, feature/reglas-negocio-logacho) test(reglas): verificar RN-01 a RN-04
-| * 8876f66 feat(reglas): aplicar restricciones de labores y campañas
-|/  
-*   426f756 Merge pull request #1: persistencia y semilla de AgroSierra
-|\  
-| * 5fc082d (origin/feature/backend-base-logacho, feature/backend-base-logacho) fix(datos): aislar H2 de variables heredadas
-| * 0eb4cf6 test(datos): verificar semilla y privilegios en H2
-| * 2ae86d0 feat(datos): implementar modelos y repositorios de lotes y labores
-| * bb3b25e feat(datos): crear esquema H2 y semilla AgroSierra
-|/  
-* 0d5573f (origin/main, origin/HEAD, main) chore: iniciar AgroAPI con Kotlin y Maven Wrapper
-</pre>
-<p>Salidas reales de <code>git log --graph --oneline --decorate --all</code>. Autor de los commits: Ismael Logacho &lt;ismaellogacho@gmail.com&gt;; ningún asistente figura como autor ni coautor.</p>
-
-<h2>8. Limitaciones verificadas</h2>
+<h2 class="salto">9. Limitaciones verificadas</h2>
 <ul>
-<li>No hay captura de un 403 dentro de la app: la interfaz no ofrece la acción sin privilegio; el 403 se evidencia por HTTP (sección 3).</li>
-<li>Durante la prueba en el emulador, el botón «Salir» no cerró la sesión al pulsarlo mediante adb; para entrar como <code>admin</code> se borraron los datos de la app (<code>pm clear</code>). Queda pendiente de revisión.</li>
-<li>La variante 200 de <code>POST /lotes/{id}/cerrar-campania</code> no se ejecutó para no alterar los datos semilla; su 403 sí.</li>
-<li>Las pruebas de AgroAPI no se reejecutaron en esta sesión; se adjuntan sus informes existentes.</li>
+<li>No hay captura de un 403 dentro de la app; la sección 4 explica por qué. El 403 se demuestra por HTTP.</li>
+<li>La corrección de «Salir» está en la rama <code>fix/cerrar-sesion-logacho</code>, pendiente de PR. No forma parte de <code>develop</code> ni de la etiqueta <code>v1.0-unidad2</code>.</li>
+<li>La variante 200 de <code>POST /lotes/{id}/cerrar-campania</code> no se ejecutó, para no alterar la semilla.</li>
+<li>Las pruebas de AgroAPI son informes previos; no se reejecutaron.</li>
 <li>AgroAPI no ofrece idempotencia: un POST sin respuesta queda como «envío incierto» y requiere revisión manual (README de AgroCampo).</li>
-<li>Cambio sorpresa (SC): pendiente; el docente aún no comunicó la letra asignada.</li>
+<li>No se ha validado iOS.</li>
 </ul>
+<h3>Cambio sorpresa</h3>
+<p><b>No asignado por el docente</b> a la fecha de estas evidencias. No se implementó ninguna variante SC-A/B/C/D.</p>
 </body></html>
