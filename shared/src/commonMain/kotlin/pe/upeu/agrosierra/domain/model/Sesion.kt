@@ -5,6 +5,7 @@ data class Sesion(
     val usuario: String,
     val rol: String,
     val privilegios: Set<String>,
+    val id: Long? = null,
 )
 
 data class UsuarioAutenticado(

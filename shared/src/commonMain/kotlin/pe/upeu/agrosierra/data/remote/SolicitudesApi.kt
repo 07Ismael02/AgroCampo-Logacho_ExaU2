@@ -4,6 +4,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.delete
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
@@ -13,6 +15,7 @@ import kotlinx.serialization.json.Json
 import pe.upeu.agrosierra.data.local.AlmacenSeguro
 import pe.upeu.agrosierra.data.local.InvalidacionesSesion
 import pe.upeu.agrosierra.data.remote.dto.LoginPeticionDto
+import pe.upeu.agrosierra.data.remote.dto.LaborPeticionDto
 import pe.upeu.agrosierra.domain.model.ErrorApi
 import pe.upeu.agrosierra.domain.model.ErrorApiException
 
@@ -36,13 +39,34 @@ class SolicitudesApi(
     }
 
     suspend fun getProtegido(path: String, token: String? = null): HttpResponse {
+        return protegido(token) { usado -> cliente.get(config.ruta(path)) {
+            header(HttpHeaders.Authorization, "Bearer $usado")
+        } }
+    }
+
+    suspend fun postProtegido(path: String, body: LaborPeticionDto, token: String): HttpResponse =
+        protegido(token) { usado -> cliente.post(config.ruta(path)) {
+            header(HttpHeaders.Authorization, "Bearer $usado")
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        } }
+
+    suspend fun putProtegido(path: String, body: LaborPeticionDto, token: String): HttpResponse =
+        protegido(token) { usado -> cliente.put(config.ruta(path)) {
+            header(HttpHeaders.Authorization, "Bearer $usado")
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        } }
+
+    suspend fun deleteProtegido(path: String, token: String): HttpResponse =
+        protegido(token) { usado -> cliente.delete(config.ruta(path)) {
+            header(HttpHeaders.Authorization, "Bearer $usado")
+        } }
+
+    private suspend fun protegido(token: String?, ejecutar: suspend (String) -> HttpResponse): HttpResponse {
         val usado = token ?: almacen.leerToken()
             ?: throw ErrorApiException(ErrorApi.NoAutorizado("Debe iniciar sesión"))
-        val respuesta = traducirFalloRed {
-            cliente.get(config.ruta(path)) {
-                header(HttpHeaders.Authorization, "Bearer $usado")
-            }
-        }
+        val respuesta = traducirFalloRed { ejecutar(usado) }
         try {
             comprobarRespuesta(respuesta, json)
         } catch (e: ErrorApiException) {

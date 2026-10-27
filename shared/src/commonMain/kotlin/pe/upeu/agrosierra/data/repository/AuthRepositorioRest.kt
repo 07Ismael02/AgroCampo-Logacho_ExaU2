@@ -25,7 +25,8 @@ class AuthRepositorioRest(
         val nueva = respuesta.body<LoginRespuestaDto>().aDominio()
         val identidad = consultarUsuario(nueva.token) // /me confirma que el token emitido es utilizable.
         almacen.guardarToken(nueva.token)
-        sesion = nueva.copy(usuario = identidad.usuario, rol = identidad.rol, privilegios = identidad.privilegios)
+        sesion = nueva.copy(usuario = identidad.usuario, rol = identidad.rol, privilegios = identidad.privilegios,
+            id = identidad.id)
         return identidad
     }
 
@@ -33,7 +34,7 @@ class AuthRepositorioRest(
         val token = almacen.leerToken()?.takeIf { it.isNotBlank() } ?: return null
         return try {
             val identidad = consultarUsuario(token)
-            sesion = Sesion(token, identidad.usuario, identidad.rol, identidad.privilegios)
+            sesion = Sesion(token, identidad.usuario, identidad.rol, identidad.privilegios, identidad.id)
             identidad
         } catch (e: ErrorApiException) {
             if (e.error is ErrorApi.NoAutorizado) cerrarSesion()
